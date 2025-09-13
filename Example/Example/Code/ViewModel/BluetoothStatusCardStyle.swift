@@ -23,12 +23,12 @@ struct BluetoothStatusCardStyle {
 extension BluetoothStatusCardStyle {
     
     
-    static var iconSuccess = BluetoothStyle.icon("dot.radiowaves.left.and.right")
-    static var iconFailure = BluetoothStyle.icon("antenna.radiowaves.left.and.right.slash")
+    static var iconSuccess = BluetoothStyle.icon("personalhotspot")
+    static var iconFailure = BluetoothStyle.icon("personalhotspot.slash")
 
     static var statusCarStyle: Self {
         .init(
-            bluetoothIcon: .icon("antenna.radiowaves.left.and.right.slash"),
+            bluetoothIcon: .icon("personalhotspot.slash"),
             statusTitle: .text("蓝牙状态"),
             infoIcon: .icon("info.circle"),
             background: .color(.bluetoothCardBackground),

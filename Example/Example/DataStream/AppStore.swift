@@ -60,6 +60,10 @@ extension AppStore {
         case .scan:
             command = BluetoothScanCommand()
             print(state.bluetooth.devices.count)
+        case .info(let info):
+            command = BluetoothInfoCommand(device: info)
+        case .connect:
+            break
         }
         
         if let command = command as? AppUpdateData {

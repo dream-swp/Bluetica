@@ -78,7 +78,7 @@ extension BlueticaCentral.Central where Central == Bluetica {
     /// 连接指定的外设（闭包方式）
     /// - Parameter peripheral: 返回 CBPeripheral 的闭包
     /// - Returns: 返回自身以便链式调用
-    public var connect: (() -> CBPeripheral) -> Self {
+    public var connect: (() -> CBPeripheral?) -> Self {
         return { [weak central] in
             let peripheral = $0()
             central?.central.connect(peripheral)
@@ -90,15 +90,19 @@ extension BlueticaCentral.Central where Central == Bluetica {
     /// - Parameter peripheral: 目标外设
     /// - Returns: 返回自身以便链式调用
     @discardableResult
-    public func connect(_ peripheral: CBPeripheral) -> Self {
-        central.centralManager.connect(peripheral, options: central.blueticaCentral.centralConfig.connectOptions)
+    public func connect(_ peripheral: CBPeripheral?) -> Self {
+        
+        if let peripheral = peripheral {
+            central.centralManager.connect(peripheral, options: central.blueticaCentral.centralConfig.connectOptions)
+        }
+      
         return Bluetica.default.central
     }
 
     /// 断开指定外设连接（闭包方式）
     /// - Parameter peripheral: 返回 CBPeripheral 的闭包
     /// - Returns: 返回自身以便链式调用
-    public var cancel: (() -> CBPeripheral) -> Self {
+    public var cancel: (() -> CBPeripheral?) -> Self {
         return { [weak central] in
             let peripheral = $0()
             central?.central.cancel(peripheral)
@@ -110,8 +114,11 @@ extension BlueticaCentral.Central where Central == Bluetica {
     /// - Parameter peripheral: 目标外设
     /// - Returns: 返回自身以便链式调用
     @discardableResult
-    public func cancel(_ peripheral: CBPeripheral) -> Self {
-        central.centralManager.cancelPeripheralConnection(peripheral)
+    public func cancel(_ peripheral: CBPeripheral?) -> Self {
+        if let peripheral = peripheral {
+            central.centralManager.cancelPeripheralConnection(peripheral)
+        }
+        
         return Bluetica.default.central
     }
 

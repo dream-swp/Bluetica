@@ -33,15 +33,20 @@ extension Bluetica: CBCentralManagerDelegate {
             guard let _ = peripheral.name else { return }
         case .identifier:
             guard let _ = peripheral.name else { return }
-            let device = BlueticaCentral.Device(central: central, peripheral: peripheral, rssi: RSSI, advertisementData: advertisementData)
+            var datas  = advertisementData
+            datas[peripheral.identifier.uuidString] = peripheral
+            let device = BlueticaCentral.Device(id: peripheral.identifier, rssi: RSSI, advertisementData: datas)
             if blueticaCentral.peripherals.discover.contains(device) { return }
         case .custom(let value):
             if value { return }
         }
-        let device = BlueticaCentral.Device(central: central, peripheral: peripheral, rssi: RSSI, advertisementData: advertisementData)
+        
+        var datas  = advertisementData
+        datas[peripheral.identifier.uuidString] = peripheral
+        let device = BlueticaCentral.Device(id: peripheral.identifier, rssi: RSSI, advertisementData: datas)
         
         blueticaCentral.peripherals.discover.append(to: device)
-        blueticaCentral.centralHandler.discover?(self, device)
+        blueticaCentral.centralHandler.discover?(self, (device: device, central: central))
     }
 
     // MARK: -
@@ -53,7 +58,7 @@ extension Bluetica: CBCentralManagerDelegate {
 
         blueticaCentral.connected.peripheral = peripheral
 
-        let device = blueticaCentral.peripherals.discover.first(where: { $0.peripheral.identifier == peripheral.identifier })
+        let device = blueticaCentral.peripherals.discover.first(where: { $0.identifier == peripheral.identifier })
         blueticaCentral.connected.device = device
 
         //  设置代理

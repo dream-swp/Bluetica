@@ -11,56 +11,32 @@ import Bluetica
 
 struct BluetoothDevice: Identifiable {
     
-    var id: UUID {  identifier }
-    let peripheral: CBPeripheral
-    let rssi: NSNumber
-    let advertisementData: [String: Any]
+    let device: BlueticaCentral.Device
+
+    var id: UUID { device.identifier }
+    
+    var name: String { device.name }
+    
+    var rssi: NSNumber { device.rssi }
+    
+    var rssiInfo: String { "RSSI: \(device.rssi)" }
+    
+    var rssiValue: Int { rssi.intValue }
+    
+    var peripheral: CBPeripheral? { device.peripheral }
+    
+    var state: PeripheralState { device.state }
+    
+    var isConnected: Bool { state == .connected }
+
+    var identifierInfo: String { "UUID: \(device.identifier.uuidString.prefix(8))..." }
+    
+    var services: [CBUUID] {  device.advertisementData.ba.serviceUUIDs }
+    
+    var serviceNames: [String] {  services.map { "自定义服务 (\($0.uuidString.prefix(8)))" } }
+    
+    var isServices: Bool { services.count > 0 }
     
 }
 
-extension BluetoothDevice {
-    
-    
-    var name: String {
-        peripheral.name ?? "Unknown Device"
-    }
 
-    var identifier: UUID {
-        peripheral.identifier
-    }
-
-    var state: PeripheralState {
-        peripheral.state.convert
-    }
-
-    var services: [CBUUID] {
-        guard let uuids = advertisementData[CBAdvertisementDataServiceUUIDsKey] as? [CBUUID] else { return [] }
-        return uuids
-    }
-    
-    
-    var rssiInfo: String {
-        "RSSI: \(rssi)"
-    }
-    
-    var identifierInfo: String {
-        "UUID: \(identifier.uuidString.prefix(8))..."
-    }
-    
-    var isServices: Bool {
-        count > 0
-    }
-    
-    var count: Int {
-        services.count
-    }
-    
-    var serviceNames: [String] {
-        services.map { "自定义服务 (\($0.uuidString.prefix(8)))" }
-    }
-    
-    
-    var isConnected: Bool {
-        state == .connected
-    }
-}

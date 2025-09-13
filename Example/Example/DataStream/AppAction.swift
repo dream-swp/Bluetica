@@ -13,6 +13,9 @@ enum AppAction {
     case start
     case stop
     case scan
+    
+    case info(BluetoothDevice)
+    case connect
 
 }
 

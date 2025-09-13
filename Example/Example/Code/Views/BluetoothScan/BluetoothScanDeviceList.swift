@@ -5,40 +5,38 @@
 //  Created by Dream on 2025/8/30.
 //
 
-
 import SwiftUI
 
-struct BluetoothDeviceList: View {
-    
-    
+
+struct BluetoothScanDeviceList: View {
+
     @EnvironmentObject private var appStore: AppStore
     
     var body: some View {
-        
+
         headerView
             .padding()
-        
+
         placeholderView
-            .toggle(bluetooth.isDevices) { _ in
+            .toggle(isDevices) { _ in
                 listView
-        }
+            }
     }
 }
 
-extension BluetoothDeviceList {
-    
-    
+extension BluetoothScanDeviceList {
+
     var headerView: some View {
         HStack {
-            
+
             Text("发现的设备 (\(bluetooth.devices.count))")
                 .font(.headline)
                 .foregroundColor(.primary)
-            
+
             Spacer()
-                
+
             EmptyView()
-                .toggle(bluetooth.isDevices) { _ in
+                .toggle(isDevices) { _ in
                     VStack(alignment: .trailing, spacing: 2) {
                         Text("点击卡片连接设备")
                             .font(.caption)
@@ -48,13 +46,12 @@ extension BluetoothDeviceList {
                             .foregroundColor(.blue)
                     }
                 }
-            
-            
+
         }
     }
-    
+
     var placeholderView: some View {
-        
+
         VStack(spacing: 12) {
             Image(systemName: "antenna.radiowaves.left.and.right.slash")
                 .font(.largeTitle)
@@ -62,35 +59,36 @@ extension BluetoothDeviceList {
             Text("暂无发现设备")
                 .font(.headline)
                 .foregroundStyle(.secondary)
-            
+
             Text("请点击\"开始扫描\"按钮搜索附近的蓝牙设备")
                 .font(.caption)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
         }
     }
-    
+
     var listView: some View {
         ScrollView {
-            
-            ForEach(bluetooth.devices) {
-                BluetoothDeviceCell(device: $0)
+
+            ForEach(bluetooth.devices) { data in
+                BluetoothScanDeviceCell(device: data) {
+                    print("\($0)")
+                }
+                .onTapGesture {
+                    appStore.dispatch(.info(data))
+                }
             }
-            .onTapGesture {
-                print("1")
-            }
-            
+
         }
     }
 }
 
-
-extension BluetoothDeviceList {
-    private var bluetooth: BluetoothModel {
-        appStore.appState.bluetooth
-    }
+extension BluetoothScanDeviceList {
+    private var bluetooth: BluetoothModel { appStore.appState.bluetooth }
+    
+    private var isDevices: Bool { bluetooth.isDevices }
 }
 
 #Preview {
-    BluetoothDeviceList().environmentObject(AppStore())
+    BluetoothScanDeviceList().environmentObject(AppStore())
 }

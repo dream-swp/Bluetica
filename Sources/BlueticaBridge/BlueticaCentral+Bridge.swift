@@ -5,6 +5,38 @@
 //  Created by Dream on 2025/8/17.
 //
 
+
+/// Item
+public struct BA<BA> {
+
+    /// Prefix property
+    public let ba: BA
+
+    /// Initialization method
+    /// - Parameter ba: Item
+    public init(_ ba: BA) {
+        self.ba = ba
+    }
+}
+
+extension BlueticaBridge {
+
+    /// Instance property
+    public var ba: BA<Self> {
+        set {}
+        get { BA(self) }
+    }
+
+    /// Static property
+    public static var ba: BA<Self>.Type {
+        set {}
+        get { BA<Self>.self }
+    }
+}
+
+
+
+
 // MARK: - BlueticaCentral.Manager
 extension BlueticaCentral {
     /// 管理器桥接结构体，包装泛型 manager

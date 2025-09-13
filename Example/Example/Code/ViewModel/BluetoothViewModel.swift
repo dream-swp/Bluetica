@@ -11,3 +11,7 @@ struct BluetoothViewModel {
     var startButtonStyle: BluetoothButtonStyle = .startStyle
     var stopButtonStyle: BluetoothButtonStyle = .stopStyle
 }
+
+
+
+

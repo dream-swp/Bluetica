@@ -22,8 +22,7 @@ extension BlueticaCentral.Central: BlueticaBridge { }
 /// BlueticaCentral 外设桥接
 extension BlueticaCentral.Peripheral: BlueticaBridge { }
 
-/// 数组桥接（支持批量操作）
-extension Array: BlueticaBridge { }
+
 
 /// Bluetica 外设桥接
 extension BlueticaPeripheral: BlueticaBridge { }

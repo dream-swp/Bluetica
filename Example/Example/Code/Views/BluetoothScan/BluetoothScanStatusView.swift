@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct BluetoothStatusCardView: View {
+struct BluetoothScanStatusView: View {
 
     @EnvironmentObject private var appStore: AppStore
 
@@ -20,6 +20,7 @@ struct BluetoothStatusCardView: View {
 
             statusView
         }
+    
         .padding()
         .background(alignment: .center) {
             bluetoothBackgroundCardStyle
@@ -29,7 +30,7 @@ struct BluetoothStatusCardView: View {
 
 }
 
-extension BluetoothStatusCardView {
+extension BluetoothScanStatusView {
 
     private var informationView: some View {
         HStack {
@@ -77,20 +78,7 @@ extension BluetoothStatusCardView {
             }
             .frame(width: 12, height: 12)
     }
-
-    private var divider: some View {
-        Rectangle()
-            .frame(height: 1)
-            .foregroundStyle(.clear)
-            .background(
-                LinearGradient(
-                    gradient: Gradient(colors: style.dividerColor.colors),
-                    startPoint: .leading,
-                    endPoint: .trailing
-                )
-            )
-    }
-
+    
     private var statusView: some View {
         HStack {
             Image(systemName: style.infoIcon.icon)
@@ -106,21 +94,15 @@ extension BluetoothStatusCardView {
     }
 }
 
-extension BluetoothStatusCardView {
+extension BluetoothScanStatusView {
+    
+    private var style: BluetoothStatusCardStyle { appStore.appState.bluetoothViewModel.statusCarStyle }
+    
+    private var bluetooth: BluetoothModel { appStore.appState.bluetooth }
 
-    private var style: BluetoothStatusCardStyle {
-        appStore.appState.bluetoothViewModel.statusCarStyle
-    }
-
-    private var isEnabled: Bool {
-        bluetooth.isEnabled
-    }
-
-    private var bluetooth: BluetoothModel {
-        appStore.appState.bluetooth
-    }
+    private var isEnabled: Bool { bluetooth.isEnabled }
 }
 
 #Preview {
-    BluetoothStatusCardView().environmentObject(AppStore())
+    BluetoothScanStatusView().environmentObject(AppStore())
 }

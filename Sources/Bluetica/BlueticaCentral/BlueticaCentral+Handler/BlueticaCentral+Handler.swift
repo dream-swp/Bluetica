@@ -50,7 +50,7 @@ extension BlueticaCentral.Handler {
     /// - Parameters:
     ///   - manager: 管理器实例
     ///   - device: 设备对象
-    public typealias Discover = (_ manager: CentralManager, _ device: BlueticaCentral.Device) -> Void
+    public typealias Discover = (_ manager: CentralManager, _ info:(device: BlueticaCentral.Device,  central: CBCentralManager)) -> Void
     /// 链式设置发现设备对象回调
     public typealias DiscoverResult = (@escaping Discover) -> CentralResult
 

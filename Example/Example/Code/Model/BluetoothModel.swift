@@ -16,6 +16,8 @@ struct BluetoothModel {
     var isConnected = false
 
     var devices: [BluetoothDevice] = []
+    
+    var deviceInfo: BluetoothDevice?
 }
 
 extension BluetoothModel {
@@ -34,3 +36,4 @@ extension BluetoothModel {
         devices.count > 0
     }
 }
+

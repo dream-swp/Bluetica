@@ -12,7 +12,7 @@ import SwiftUI
 struct Model: Identifiable {
     var id: UUID
     var name: String?
-    let peripheral: CBPeripheral
+    let peripheral: CBPeripheral?
 
 }
 
@@ -28,10 +28,10 @@ struct ContentView: View {
     var body: some View {
 
         VStack {
-            BluetoothStatusCardView()
+            BluetoothScanStatusView()
             BluetoothScanControlsView()
             
-            BluetoothDeviceList()
+            BluetoothScanDeviceList()
         }
     }
 }
@@ -56,9 +56,9 @@ extension ContentView {
                 self.state = central.state
                 print("central.state = \(central.state)")
             }
-            .discover { manager, device in
-                if datas.contains(where: { $0.id == device.identifier }) { return }
-                let model = Model(id: device.identifier, name: device.name, peripheral: device.peripheral)
+            .discover{ manager, info in
+                if datas.contains(where: { $0.id == info.device.identifier }) { return }
+                let model = Model(id: info.device.identifier, name: info.device.name, peripheral: info.device.peripheral)
                 self.datas.append(model)
             }
             .connectSuccess { manager, info in
@@ -81,7 +81,7 @@ extension ContentView {
 
     }
 
-    func connect(_ peripheral: CBPeripheral) {
+    func connect(_ peripheral: CBPeripheral?) {
         let _ = bluetica.central.connect {
             peripheral
         }

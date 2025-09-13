@@ -1,5 +1,5 @@
 //
-//  BluetoothDeviceCell.swift
+//  BluetoothScanDeviceCell.swift
 //  Example
 //
 //  Created by Dream on 2025/8/31.
@@ -8,9 +8,11 @@
 import CoreBluetooth
 import SwiftUI
 
-struct BluetoothDeviceCell: View {
+struct BluetoothScanDeviceCell: View {
 
     let device: BluetoothDevice
+    
+    let action: (Bool) -> Void
 
     var body: some View {
         VStack(spacing: 12) {
@@ -32,11 +34,12 @@ struct BluetoothDeviceCell: View {
 
 }
 
-extension BluetoothDeviceCell {
+extension BluetoothScanDeviceCell {
 
     private var icon: some View {
-        Image(systemName: deviceIcon { device.name })
-            .font(.title2)
+        Image(systemName: device.name.deviceIcon { device.isConnected })
+            .font(.title)
+            .fontWeight(.bold)
             .foregroundStyle(.green)
     }
 
@@ -72,7 +75,7 @@ extension BluetoothDeviceCell {
         VStack(alignment: .trailing, spacing: 4) {
             Text(device.rssiInfo)
                 .font(.caption)
-                .foregroundStyle(rssiColor { device.rssi })
+                .foregroundStyle(device.rssiValue.rssiColor)
                 .fontWeight(.medium)
 
             
@@ -88,7 +91,7 @@ extension BluetoothDeviceCell {
 
             EmptyView()
                 .toggle(device.isServices) { _ in
-                    Text("\(device.count) 个服务")
+                    Text("\(device.services.count) 个服务")
                         .font(.caption2)
                         .foregroundColor(.blue)
                         .padding(.horizontal, 6)
@@ -102,7 +105,7 @@ extension BluetoothDeviceCell {
 
     private var button: some View {
         Button {
-
+            action(false)
         } label: {
             HStack {
                 Image(systemName: "link")
@@ -114,9 +117,10 @@ extension BluetoothDeviceCell {
             .foregroundColor(.white)
             .clipShape(RoundedRectangle(cornerRadius: 8))
         }
+        .buttonStyle(.plain)
         .toggle(device.isConnected) { _ in
             Button {
-                
+                action(true)
             } label: {
                 HStack {
                     Image(systemName: "info.circle")
@@ -128,44 +132,8 @@ extension BluetoothDeviceCell {
                 .foregroundColor(.white)
                 .clipShape(RoundedRectangle(cornerRadius: 8))
             }
-        }
-    }
-}
-
-extension BluetoothDeviceCell {
-
-    private var rssiColor: (() -> (NSNumber)) -> Color {
-
-        return {
-            switch $0().intValue {
-            case -50..<0:
-                return .green
-            case -70 ..< -50:
-                return .orange
-            case -90 ..< -70:
-                return .red
-            default:
-                return .gray
-            }
-        }
-    }
-
-    private var deviceIcon: (() -> (String)) -> String {
-
-        return {
-            let name = $0().lowercased()
-            switch name {
-            case let string where string.contains("phone") || string.contains("iphone"):
-                return "iphone"
-            case let string where string.contains("watch"):
-                return "applewatch"
-            case let string where string.contains("mac"):
-                return "laptopcomputer"
-            case let string where string.contains("air"):
-                return "airpods"
-            default:
-                return "dot.radiowaves.left.and.right"
-            }
+            .tag(1)
+            .buttonStyle(.plain)
         }
     }
 }

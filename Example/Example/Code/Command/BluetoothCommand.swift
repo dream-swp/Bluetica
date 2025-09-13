@@ -108,10 +108,28 @@ struct BluetoothScanCommand: AppCommand {
 
         let _ = store.appState.bluetica
             .central
-            .discover { manager, device in
-                let data: BluetoothDevice = .init(peripheral: device.peripheral, rssi: device.rssi, advertisementData: device.advertisementData)
+            .discover { manager, info in
+                let data: BluetoothDevice = .init(device: info.device)
                 store.appState.bluetooth.devices.append(data)
                 store.dispatch(.scan)
             }
     }
+}
+
+struct BluetoothInfoCommand: AppCommand, AppUpdateData {
+   
+    var device: BluetoothDevice
+
+    func execute(in store: AppStore) {  }
+
+    var update: (() -> AppState) -> AppState {
+
+        return {
+            var state = $0()
+            state.bluetooth.deviceInfo = device
+            return state
+        }
+    }
+    
+    
 }

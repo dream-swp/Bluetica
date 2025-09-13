@@ -43,6 +43,7 @@ extension Bluetica {
         case .none: break
         case .time(let timeInterval):
             timer = Timer.scheduledTimer(withTimeInterval: timeInterval, repeats: false) { [weak self] _ in
+                
                 self?.central.stop()
             }
         }
