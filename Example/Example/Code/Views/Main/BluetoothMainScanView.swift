@@ -28,7 +28,7 @@ struct BluetoothMainScanView: View {
         }
         .navigationTitle("蓝牙扫描")
         .onAppear {
-            appStore.dispatch(.status)
+            appStore.dispatch(.bluetooth(.status))
         }
         .toggle(DeviceType.isIphone) {
             $0.sheet(item: device) { device in

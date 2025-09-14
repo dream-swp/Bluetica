@@ -14,6 +14,7 @@ class AppStore: ObservableObject {
 
 extension AppStore {
 
+
     func dispatch(_ action: AppAction) {
 
         #if DEBUG
@@ -34,42 +35,23 @@ extension AppStore {
             print("[COMMAND]: \(command)")
         #endif
 
-        command.execute(in: self)
+        command.execute(self, action: action)
     }
 
 }
 
 extension AppStore {
 
-    class func reduce(state aState: AppState, action: AppAction) -> (state: AppState, command: AppCommand?) {
+    static func reduce(state aState: AppState, action: AppAction) -> (state: AppState, command: AppCommand?) {
 
         var state = aState
 
-        var command: AppCommand?
-
-        switch action {
-
-        case .status:
-            command = BluetoothStateCommand()
-        case .togg:
-            command = BluetoothToggleCommand()
-        case .start:
-            command = BluetoothStartCommand()
-        case .stop:
-            command = BluetoothStopCommand()
-        case .scan:
-            command = BluetoothScanCommand()
-            print(state.bluetooth.devices.count)
-        case .info(let info):
-            command = BluetoothInfoCommand(device: info)
-        case .connect:
-            break
-        }
+        let command = action.command
         
         if let command = command as? AppUpdateData {
-            state = command.update { state }
+            state = command.update { ( state, action) }
         }
-        
+
         return (state, command)
     }
 

@@ -14,12 +14,14 @@ extension BlueticaCentral {
     public struct Device: Identifiable {
         public var id: UUID
         public let rssi: NSNumber
-        public let advertisementData: [String: Any]
+        public let advertisement: [String: Any]
+        public let metadata: [String: Any]
 
-        public init(id: UUID, rssi: NSNumber, advertisementData: [String : Any]) {
+        public init(id: UUID, rssi: NSNumber, advertisement: [String : Any], metadata: [String : Any]) {
             self.id = id
             self.rssi = rssi
-            self.advertisementData = advertisementData
+            self.advertisement = advertisement
+            self.metadata = metadata
         }
 
     }
@@ -42,7 +44,7 @@ extension BlueticaCentral.Device: Equatable {
 extension BlueticaCentral.Device {
     
     public var peripheral: CBPeripheral? {
-        self.advertisementData[id.uuidString] as? CBPeripheral
+        self.metadata[id.uuidString] as? CBPeripheral
     }
     
     public var name: String {

@@ -6,22 +6,24 @@
 //
 
 import Bluetica
-import Combine
 import Foundation
 
 struct BluetoothStateCommand: AppCommand, AppUpdateData {
 
-    func execute(in store: AppStore) {
+    func execute(_ store: AppStore, action: AppAction) {
         if store.appState.bluetooth.isEnabled { return }
-        let _ = store.appState.bluetica.central
+        let _ = store
+            .appState
+            .bluetica
+            .central
             .updateState { manager, central in
-                store.dispatch(.status)
+                store.dispatch(.bluetooth(.status))
             }
     }
 
-    var update: (() -> AppState) -> AppState {
+    var update: (() -> (state: AppState, action: AppAction)) -> AppState {
         return {
-            var state = $0()
+            var state = $0().state
             let isEnabled = state.bluetica.central.isEnabled
             state.bluetooth.isEnabled = isEnabled
             let bluetoothIcon = isEnabled ? BluetoothStatusCardStyle.iconSuccess : BluetoothStatusCardStyle.iconFailure
@@ -52,33 +54,23 @@ struct BluetoothStateCommand: AppCommand, AppUpdateData {
     }
 }
 
-struct BluetoothToggleCommand: AppCommand {
-
-    func execute(in store: AppStore) {
-        let isStart = store.appState.bluetooth.isScanning
-        let action: AppAction = isStart ? .stop : .start
-        store.dispatch(action)
-
-    }
-}
-
 struct BluetoothStartCommand: AppCommand, AppUpdateData {
-    func execute(in store: AppStore) {
-        
+
+    func execute(_ store: AppStore, action: AppAction) {
+
         store.appState.bluetica
             .central
             .config { $0.filter { .identifier }.scan { .time(5) } }
             .stopDiscover {
-                store.dispatch(.stop)
+                store.dispatch(.bluetooth(.stop))
             }
             .start
-        
-        store.dispatch(.scan)
+        store.dispatch(.bluetooth(.scan))
     }
-    
-    var update: (() -> AppState) -> AppState {
+
+    var update: (() -> (state: AppState, action: AppAction)) -> AppState {
         return {
-            var state = $0()
+            var state = $0().state
             state.bluetooth.isScanning = true
             return state
         }
@@ -86,15 +78,15 @@ struct BluetoothStartCommand: AppCommand, AppUpdateData {
 }
 
 struct BluetoothStopCommand: AppCommand, AppUpdateData {
-    func execute(in store: AppStore) {
+    func execute(_ store: AppStore, action: AppAction) {
         let _ = store.appState.bluetica
             .central
             .stop
     }
-    
-    var update: (() -> AppState) -> AppState {
+
+    var update: (() -> (state: AppState, action: AppAction)) -> AppState {
         return {
-            var state = $0()
+            var state = $0().state
             state.bluetooth.isScanning = false
             return state
         }
@@ -104,32 +96,30 @@ struct BluetoothStopCommand: AppCommand, AppUpdateData {
 
 struct BluetoothScanCommand: AppCommand {
 
-    func execute(in store: AppStore) {
+    func execute(_ store: AppStore, action: AppAction) {
 
         let _ = store.appState.bluetica
             .central
             .discover { manager, info in
                 let data: BluetoothDevice = .init(device: info.device)
                 store.appState.bluetooth.devices.append(data)
-                store.dispatch(.scan)
+                store.dispatch(.bluetooth(.scan))
             }
     }
 }
 
 struct BluetoothInfoCommand: AppCommand, AppUpdateData {
-   
+
     var device: BluetoothDevice
 
-    func execute(in store: AppStore) {  }
+    func execute(_ store: AppStore, action: AppAction) {}
 
-    var update: (() -> AppState) -> AppState {
-
+    var update: (() -> (state: AppState, action: AppAction)) -> AppState {
         return {
-            var state = $0()
+            var state = $0().state
             state.bluetooth.deviceInfo = device
             return state
         }
     }
-    
-    
+
 }

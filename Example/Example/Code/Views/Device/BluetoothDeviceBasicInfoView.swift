@@ -9,6 +9,8 @@ import SwiftUI
 
 struct BluetoothDeviceBasicInfoView: View {
 
+    let device: BluetoothDevice
+
     var body: some View {
         VStack(spacing: 16) {
             HStack {
@@ -20,40 +22,33 @@ struct BluetoothDeviceBasicInfoView: View {
 
             divider
 
-            services { (title: "主服务", [GridData(title: "xxxx", subTitle: "181A"), GridData(title: "xxxx", subTitle: "181A")]) }
-            
-            divider
-            
-            services { (title: "广播数据", datas: [GridData(title: "xxxx", subTitle: "181A"), GridData(title: "xxxx", subTitle: "181A")]) }
+            EmptyView()
+                .toggle(primaryServices.count > 0) { _ in
+                    services { (title: "主服务", datas: primaryServices) }
+                    divider
 
+                }
+
+            EmptyView()
+                .toggle(advertisement.count > 0) { _ in
+                    services { (title: "广播数据", datas: advertisement) }
+                }
         }
         .padding(25)
-        .background(alignment: .center) {
-            bluetoothBackgroundCardStyle
-                .padding(10)
-        }
+        .background(alignment: .center) { bluetoothBackgroundCardStyle.padding(10) }
 
     }
 }
-
-extension BluetoothDeviceBasicInfoView {
-    struct GridData: Identifiable {
-        let id: UUID = UUID()
-        let title: String
-        let subTitle: String
-    }
-}
-
 extension BluetoothDeviceBasicInfoView {
 
     var icon: some View {
         VStack {
-            Image(systemName: "1231231231231".deviceIcon)
+            Image(systemName: device.name.deviceIcon { false })
                 .font(.largeTitle)
-                .foregroundStyle(false.connectedColor)
+                .foregroundStyle(device.isConnected.connectedColor)
 
             Circle()
-                .fill(true.statusCircleColor)
+                .fill(device.isConnected.connectedColor)
                 .frame(width: 8, height: 8)
         }
     }
@@ -66,7 +61,7 @@ extension BluetoothDeviceBasicInfoView {
                 .foregroundStyle(.primary)
                 .padding(.top, 5)
 
-            Text("UUID: dasdasdas")
+            Text("UUID: \(device.id.string)")
                 .font(.caption)
                 .foregroundStyle(.secondary)
                 .textSelection(.enabled)
@@ -79,15 +74,15 @@ extension BluetoothDeviceBasicInfoView {
             Text("信号强度:")
                 .font(.caption)
                 .foregroundStyle(.secondary)
-            Text("-40 dBm")
+            Text("\(device.rssiInfo) dBm")
                 .font(.caption)
                 .fontWeight(.medium)
-                .foregroundStyle((-49).rssiColor)
+                .foregroundStyle(device.rssiValue.rssiColor)
             Spacer()
-            Text("未连接")
+            Text(device.state.description)
                 .font(.caption)
                 .fontWeight(.medium)
-                .foregroundStyle(false.statusTextColor)
+                .foregroundStyle(false.connectedColor)
         }
     }
 
@@ -105,18 +100,16 @@ extension BluetoothDeviceBasicInfoView {
                     columns: [
                         GridItem(.flexible(), alignment: .leading),
                         GridItem(.flexible(), alignment: .leading),
-                    ],
-                    spacing: 8
-                ) {
+                    ], spacing: 8) {
                     ForEach(result.datas) { data in
                         VStack(alignment: .leading, spacing: 2) {
-                            Text(data.title)
-                                .font(.subheadline)
-                                .foregroundStyle(.primary)
-
-                            Text(data.subTitle)
+                            Text(data.key)
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
+
+                            Text(data.value)
+                                .font(.caption2)
+                                .foregroundStyle(.primary)
                                 .textSelection(.enabled)
                         }
                         .padding(.vertical, 4)
@@ -130,6 +123,47 @@ extension BluetoothDeviceBasicInfoView {
 
 }
 
+extension BluetoothDeviceBasicInfoView {
+    struct GridData: Identifiable {
+        let id: UUID = UUID()
+        let key: String
+        let value: String
+    }
+}
+
+extension BluetoothDeviceBasicInfoView {
+
+    var primaryServices: [GridData] {
+
+        let uuids = device.services
+        let names = device.serviceNames
+        var result: [GridData] = []
+        for (index, uuid) in uuids.enumerated() {
+            let name = names[index]
+            let data = GridData(key: name, value: uuid.string)
+            result.append(data)
+        }
+
+        return result
+    }
+
+    var advertisement: [GridData] {
+
+        let data = device.advertisement
+        let keys = data.keys
+
+        var result: [GridData] = []
+        for key in keys {
+            if let value = data[key] {
+                let data = GridData(key: key, value: String("\(value)"))
+                result.append(data)
+            }
+        }
+
+        return result
+    }
+}
+
 #Preview {
-//    BluetoothDeviceBasicInfoView()
+    //    BluetoothDeviceBasicInfoView()
 }

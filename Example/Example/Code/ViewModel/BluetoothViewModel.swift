@@ -10,6 +10,7 @@ struct BluetoothViewModel {
     var statusCarStyle: BluetoothStatusCardStyle = .statusCarStyle
     var startButtonStyle: BluetoothButtonStyle = .startStyle
     var stopButtonStyle: BluetoothButtonStyle = .stopStyle
+    var clearButtonStyle: BluetoothButtonStyle = .clearStyle
 }
 
 

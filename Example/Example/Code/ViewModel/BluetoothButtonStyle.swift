@@ -15,7 +15,7 @@ struct BluetoothButtonStyle {
     let fontColor: BluetoothStyle
     let font: BluetoothStyle
     var disabled = false
-    var cornerRadius: CGFloat = 10;
+    var cornerRadius: CGFloat = 10
 
 }
 
@@ -26,7 +26,7 @@ extension BluetoothButtonStyle {
         .init(
             imageName: .icon("play.circle.fill"),
             title: .text("开始扫描"),
-            backgroundColor: .color(.orange),
+            backgroundColor: .color(.blue),
             fontColor: .color(.white),
             font: .font(.callout)
         )
@@ -40,6 +40,15 @@ extension BluetoothButtonStyle {
             fontColor: .color(.white),
             font: .font(.callout)
         )
+    }
+
+    static var clearStyle: Self {
+        .init(
+            imageName: .icon("trash"),
+            title: .text("清空列表"),
+            backgroundColor: .color(.orange),
+            fontColor: .color(.white),
+            font: .font(.callout))
     }
 
 }

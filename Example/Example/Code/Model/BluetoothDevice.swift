@@ -31,11 +31,13 @@ struct BluetoothDevice: Identifiable {
 
     var identifierInfo: String { "UUID: \(device.identifier.uuidString.prefix(8))..." }
     
-    var services: [CBUUID] {  device.advertisementData.ba.serviceUUIDs }
+    var services: [CBUUID] {  device.metadata.ba.serviceUUIDs }
     
     var serviceNames: [String] {  services.map { "自定义服务 (\($0.uuidString.prefix(8)))" } }
     
     var isServices: Bool { services.count > 0 }
+    
+    var advertisement: [String: Any] { device.advertisement }
     
 }
 

@@ -78,9 +78,18 @@ extension BluetoothMainBarView {
         #else
             List(itmes, id: \.id) { item in
                 SideBar(item: item)
+                    .listStyle(InsetGroupedListStyle())
+                    .listRowBackground(
+                        RoundedRectangle(cornerRadius: 10)
+                            .fill(selection == item ? .bluetoothBarDefault : Color.clear)
+                            .padding(.vertical, 0)
+                            .padding(.horizontal, 0)
+                    )
+
                     .onTapGesture {
                         selection = item
                     }
+                    
             }
         #endif
 

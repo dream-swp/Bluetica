@@ -35,13 +35,22 @@ extension BluetoothScanControlsView {
     private var buttons: some View {
         HStack(spacing: 12) {
 
-            BluetoothButton(startButtonStyle) {
-                appStore.dispatch(.togg)
-            }
+            LazyVGrid(columns: buttonColumns, spacing: 8) {
+                
+                BluetoothButton(startButtonStyle) {
+                    appStore.dispatch(.bluetooth(isScanning ? .stop : .start))
+                }
 
-            .toggle(isScanning) {
-                $0.model { stopButtonStyle }
+                .toggle(isScanning) {
+                    $0.model { stopButtonStyle }
+                }
+                
+                BluetoothButton(clearButtonStyle) {
+//                    appStore.dispatch(.togg)
+                    print("12312312")
+                }
             }
+           
 
         }
 
@@ -88,9 +97,17 @@ extension BluetoothScanControlsView {
     private var stopButtonStyle: BluetoothButtonStyle {
         appStore.appState.bluetoothViewModel.stopButtonStyle
     }
+    
+    private var clearButtonStyle: BluetoothButtonStyle {
+        appStore.appState.bluetoothViewModel.clearButtonStyle
+    }
 
     private var isScanning: Bool {
         appStore.appState.bluetooth.isScanning
+    }
+    
+    private var buttonColumns: [GridItem] {
+        [ GridItem(.flexible(), alignment: .center), GridItem(.flexible(), alignment: .center), ]
     }
 
 }

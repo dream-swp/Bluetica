@@ -69,16 +69,14 @@ extension BluetoothScanDeviceList {
 
     var listView: some View {
         ScrollView {
-
             ForEach(bluetooth.devices) { data in
                 BluetoothScanDeviceCell(device: data) {
                     print("\($0)")
                 }
                 .onTapGesture {
-                    appStore.dispatch(.info(data))
+                    appStore.dispatch(.bluetooth(.info(data)))
                 }
             }
-
         }
     }
 }

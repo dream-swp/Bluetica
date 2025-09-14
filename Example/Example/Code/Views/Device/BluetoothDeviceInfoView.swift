@@ -15,15 +15,13 @@ struct BluetoothDeviceInfoView: View {
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
-        //        NavigationView {
         ScrollView {
-            BluetoothDeviceBasicInfoView()
+            BluetoothDeviceBasicInfoView(device: device)
         }
         .navigationTitle("设备详情")
         .navigationBarTitleDisplayModeCompat()
         .toggle(DeviceType.isIphone) {
-            $0
-                .toolbar {
+            $0.toolbar {
                 ToolbarItem(placement: .navigationBarTrailingCompat) {
                     Button { dismiss() } label: {
                         Text("Done").foregroundStyle(.blue)

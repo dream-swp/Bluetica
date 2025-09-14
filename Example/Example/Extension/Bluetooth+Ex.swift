@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import CoreBluetooth
 
 import SwiftUI
 
@@ -74,10 +75,17 @@ extension UUID {
     }
 }
 
+extension CBUUID {
+    
+    var string: String {
+        self.uuidString
+    }
+}
+
 extension Bool {
     
     var connectedColor: Color {
-        self ? .green : .blue
+        self ? .green : .gray
     }
     
     var statusCircleColor: Color {

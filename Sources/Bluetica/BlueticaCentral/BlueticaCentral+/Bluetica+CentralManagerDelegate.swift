@@ -35,7 +35,7 @@ extension Bluetica: CBCentralManagerDelegate {
             guard let _ = peripheral.name else { return }
             var datas  = advertisementData
             datas[peripheral.identifier.uuidString] = peripheral
-            let device = BlueticaCentral.Device(id: peripheral.identifier, rssi: RSSI, advertisementData: datas)
+            let device = BlueticaCentral.Device(id: peripheral.identifier, rssi: RSSI, advertisement: advertisementData, metadata: datas)
             if blueticaCentral.peripherals.discover.contains(device) { return }
         case .custom(let value):
             if value { return }
@@ -43,7 +43,7 @@ extension Bluetica: CBCentralManagerDelegate {
         
         var datas  = advertisementData
         datas[peripheral.identifier.uuidString] = peripheral
-        let device = BlueticaCentral.Device(id: peripheral.identifier, rssi: RSSI, advertisementData: datas)
+        let device = BlueticaCentral.Device(id: peripheral.identifier, rssi: RSSI, advertisement: advertisementData, metadata: datas)
         
         blueticaCentral.peripherals.discover.append(to: device)
         blueticaCentral.centralHandler.discover?(self, (device: device, central: central))

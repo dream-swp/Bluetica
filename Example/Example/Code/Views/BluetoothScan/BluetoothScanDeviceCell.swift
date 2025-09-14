@@ -40,7 +40,7 @@ extension BluetoothScanDeviceCell {
         Image(systemName: device.name.deviceIcon { device.isConnected })
             .font(.title)
             .fontWeight(.bold)
-            .foregroundStyle(.green)
+            .foregroundStyle(device.isConnected.connectedColor)
     }
 
     private var serviceInfoView: some View {
