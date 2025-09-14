@@ -92,7 +92,7 @@ extension BlueticaCentral.Central where Central == Bluetica {
     @discardableResult
     public func connect(_ peripheral: CBPeripheral?) -> Self {
         
-        if let peripheral = peripheral {
+        if let peripheral = peripheral, peripheral.state.convert != .connected {
             central.centralManager.connect(peripheral, options: central.blueticaCentral.centralConfig.connectOptions)
         }
       
@@ -115,7 +115,7 @@ extension BlueticaCentral.Central where Central == Bluetica {
     /// - Returns: 返回自身以便链式调用
     @discardableResult
     public func cancel(_ peripheral: CBPeripheral?) -> Self {
-        if let peripheral = peripheral {
+        if let peripheral = peripheral, peripheral.state.convert == .connected {
             central.centralManager.cancelPeripheralConnection(peripheral)
         }
         
@@ -143,6 +143,12 @@ extension BlueticaCentral.Central where Central == Bluetica {
     /// 是否已清空已发现的设备
     public var isClearDevice: Bool {
         central.blueticaCentral.peripherals.discover.count <= 0
+    }
+    
+    public var clearDevice: Self {
+        let _ = cancels
+        let _ = central.blueticaCentral.peripherals.discover.removeAll()
+        return self
     }
 
 }

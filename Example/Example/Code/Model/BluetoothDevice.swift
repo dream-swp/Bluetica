@@ -11,7 +11,7 @@ import Bluetica
 
 struct BluetoothDevice: Identifiable {
     
-    let device: BlueticaCentral.Device
+    var device: BlueticaCentral.Device
 
     var id: UUID { device.identifier }
     

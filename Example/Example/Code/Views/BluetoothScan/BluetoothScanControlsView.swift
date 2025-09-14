@@ -46,8 +46,7 @@ extension BluetoothScanControlsView {
                 }
                 
                 BluetoothButton(clearButtonStyle) {
-//                    appStore.dispatch(.togg)
-                    print("12312312")
+                    appStore.dispatch(.bluetooth(.disconnect(nil, true)))
                 }
             }
            

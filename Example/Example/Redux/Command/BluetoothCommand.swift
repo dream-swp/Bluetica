@@ -60,7 +60,9 @@ struct BluetoothStartCommand: AppCommand, AppUpdateData {
 
         store.appState.bluetica
             .central
-            .config { $0.filter { .identifier }.scan { .time(5) } }
+            .config {
+                $0.filter { .identifier }.scan { .time(20) }
+            }
             .stopDiscover {
                 store.dispatch(.bluetooth(.stop))
             }
@@ -108,7 +110,7 @@ struct BluetoothScanCommand: AppCommand {
     }
 }
 
-struct BluetoothInfoCommand: AppCommand, AppUpdateData {
+struct BluetoothDeviceCommand: AppCommand, AppUpdateData {
 
     var device: BluetoothDevice
 
@@ -117,7 +119,61 @@ struct BluetoothInfoCommand: AppCommand, AppUpdateData {
     var update: (() -> (state: AppState, action: AppAction)) -> AppState {
         return {
             var state = $0().state
-            state.bluetooth.deviceInfo = device
+            state.bluetooth.device = device
+            return state
+        }
+    }
+}
+
+struct BluetoothConnectCommand: AppCommand, AppUpdateData {
+
+    var device: BluetoothDevice
+
+    func execute(_ store: AppStore, action: AppAction) {
+
+        let _ = store.appState.bluetica
+            .central
+            .connect {
+                device.peripheral
+            }.connectSuccess { manager, info in
+                if let aDevice = info.device {
+                    store.appState.bluetooth.device?.device = aDevice
+                }
+            }
+            .disconnectPeripheral { manager, info in
+                if let aDevice = info.device {
+                    store.appState.bluetooth.device?.device = aDevice
+                }
+            }
+
+    }
+
+    var update: (() -> (state: AppState, action: AppAction)) -> AppState {
+        return { $0().state }
+    }
+
+}
+
+struct BluetoothDisconnectCommand: AppCommand, AppUpdateData {
+
+    var device: BluetoothDevice?
+    var isClearAll = true
+
+    func execute(_ store: AppStore, action: AppAction) {
+
+        if isClearAll {
+            let _ = store.appState.bluetica.central.clearDevice
+
+        }
+
+    }
+
+    var update: (() -> (state: AppState, action: AppAction)) -> AppState {
+        return {
+            var state = $0().state
+            if isClearAll {
+                state.bluetooth.devices.removeAll()
+            }
             return state
         }
     }

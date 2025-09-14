@@ -17,7 +17,7 @@ struct BluetoothModel {
 
     var devices: [BluetoothDevice] = []
     
-    var deviceInfo: BluetoothDevice?
+    var device: BluetoothDevice?
 }
 
 extension BluetoothModel {

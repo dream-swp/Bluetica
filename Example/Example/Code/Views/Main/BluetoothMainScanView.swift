@@ -13,7 +13,7 @@ struct BluetoothMainScanView: View {
     @EnvironmentObject private var appStore: AppStore
 
     private var device: Binding<BluetoothDevice?> {
-        $appStore.appState.bluetooth.deviceInfo
+        $appStore.appState.bluetooth.device
     }
 
     @State var viewModel = BluetoothViewModel()

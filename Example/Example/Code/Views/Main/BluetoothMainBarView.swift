@@ -121,7 +121,7 @@ extension BluetoothMainBarView {
 extension BluetoothMainBarView {
     
     private var device: BluetoothDevice? {
-        appStore.appState.bluetooth.deviceInfo
+        appStore.appState.bluetooth.device
     }
     
     private var itmes: [BluetoothItmes]  {

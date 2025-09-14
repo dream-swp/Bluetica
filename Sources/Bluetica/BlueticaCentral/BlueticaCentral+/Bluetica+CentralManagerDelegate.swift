@@ -24,27 +24,27 @@ extension Bluetica: CBCentralManagerDelegate {
     public func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String: Any], rssi RSSI: NSNumber) {
 
         if self.central.isEnabled == false { return }
-    
+
         blueticaCentral.centralHandler.updateDiscover?(self, (central: central, peripheral: peripheral, advertisementData: advertisementData, rssi: RSSI))
-        
+
         switch blueticaCentral.centralConfig.filter {
         case .none: break
         case .name:
-            guard let _ = peripheral.name else { return }
+            guard peripheral.name != nil else { return }
         case .identifier:
-            guard let _ = peripheral.name else { return }
-            var datas  = advertisementData
+            guard peripheral.name != nil else { return }
+            var datas = advertisementData
             datas[peripheral.identifier.uuidString] = peripheral
             let device = BlueticaCentral.Device(id: peripheral.identifier, rssi: RSSI, advertisement: advertisementData, metadata: datas)
             if blueticaCentral.peripherals.discover.contains(device) { return }
         case .custom(let value):
             if value { return }
         }
-        
-        var datas  = advertisementData
+
+        var datas = advertisementData
         datas[peripheral.identifier.uuidString] = peripheral
         let device = BlueticaCentral.Device(id: peripheral.identifier, rssi: RSSI, advertisement: advertisementData, metadata: datas)
-        
+
         blueticaCentral.peripherals.discover.append(to: device)
         blueticaCentral.centralHandler.discover?(self, (device: device, central: central))
     }
@@ -53,38 +53,60 @@ extension Bluetica: CBCentralManagerDelegate {
 
     /// 成功连接外设时回调
     public func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
-
-        self.centralManager.stopScan()
-
-        blueticaCentral.connected.peripheral = peripheral
-
-        let device = blueticaCentral.peripherals.discover.first(where: { $0.identifier == peripheral.identifier })
-        blueticaCentral.connected.device = device
-
+        
+        self.central.stop
+        
+        var device = blueticaCentral.peripherals.discover.device { peripheral.identifier }
+        
         //  设置代理
         peripheral.delegate = self
-
+        
+        blueticaCentral.connected.device = device?.peripheral { peripheral }
+        blueticaCentral.connected.peripheral = peripheral
+        blueticaCentral.peripherals.connected.append(to: device)
+        
         //  发现服务
         if blueticaCentral.peripheralConfig.isDiscoverServices {
             peripheral.discoverServices(blueticaCentral.peripheralConfig.discoverServices)
         }
-
-        blueticaCentral.centralHandler.connectSuccess?(self, (central: central, peripheral: peripheral))
+    
+        blueticaCentral.centralHandler.connectSuccess?(self, (device: blueticaCentral.connected.device, central: central, peripheral: peripheral))
     }
 
     /// 连接外设失败时回调
     public func centralManager(_ central: CBCentralManager, didFailToConnect peripheral: CBPeripheral, error: Error?) {
-        blueticaCentral.centralHandler.connectFailure?(self, (central: central, peripheral: peripheral, error: error))
+
+        var device = blueticaCentral.peripherals.discover.device { peripheral.identifier }
+        
+        device = device?.peripheral { peripheral }
+        
+        let _ = blueticaCentral.peripherals.discover.replace { device }
+        
+        blueticaCentral.centralHandler.connectFailure?(self, (device: device, central: central, peripheral: peripheral, error: error))
     }
 
     /// 外设断开连接时回调
     public func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
-        blueticaCentral.centralHandler.disconnectPeripheral?(self, (central: central, peripheral: peripheral, error: error))
+
+        var device = blueticaCentral.peripherals.connected.device { peripheral.identifier }
+        
+        device = device?.peripheral { peripheral }
+        
+        let _ = blueticaCentral.peripherals.connected.replace {  device }
+        
+        blueticaCentral.centralHandler.disconnectPeripheral?(self, (device: device, central: central, peripheral: peripheral, error: error))
     }
 
     /// 外设断开连接（带时间戳）时回调
     public func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, timestamp: CFAbsoluteTime, isReconnecting: Bool, error: Error?) {
-        blueticaCentral.centralHandler.disconnectPeripheralTimestamp?(self, (central: central, peripheral: peripheral, timestamp: timestamp, isReconnecting: isReconnecting, error: error))
+       
+        var device = blueticaCentral.peripherals.connected.device { peripheral.identifier }
+        
+        device = device?.peripheral { peripheral }
+        
+        let _ = blueticaCentral.peripherals.connected.replace {  device }
+        
+        blueticaCentral.centralHandler.disconnectPeripheralTimestamp?(self, (device: device, central: central, peripheral: peripheral, timestamp: timestamp, isReconnecting: isReconnecting, error: error))
     }
 
     #if os(iOS)

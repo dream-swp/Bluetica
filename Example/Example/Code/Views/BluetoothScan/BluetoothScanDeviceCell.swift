@@ -132,7 +132,6 @@ extension BluetoothScanDeviceCell {
                 .foregroundColor(.white)
                 .clipShape(RoundedRectangle(cornerRadius: 8))
             }
-            .tag(1)
             .buttonStyle(.plain)
         }
     }

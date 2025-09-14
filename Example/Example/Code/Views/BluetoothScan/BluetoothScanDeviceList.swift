@@ -71,10 +71,10 @@ extension BluetoothScanDeviceList {
         ScrollView {
             ForEach(bluetooth.devices) { data in
                 BluetoothScanDeviceCell(device: data) {
-                    print("\($0)")
+                    appStore.dispatch(.bluetooth($0 ? .device(data) :.connect(data)))
                 }
                 .onTapGesture {
-                    appStore.dispatch(.bluetooth(.info(data)))
+                    appStore.dispatch(.bluetooth(.device(data)))
                 }
             }
         }

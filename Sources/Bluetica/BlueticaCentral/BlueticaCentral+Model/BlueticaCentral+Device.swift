@@ -15,15 +15,14 @@ extension BlueticaCentral {
         public var id: UUID
         public let rssi: NSNumber
         public let advertisement: [String: Any]
-        public let metadata: [String: Any]
+        public var metadata: [String: Any]
 
-        public init(id: UUID, rssi: NSNumber, advertisement: [String : Any], metadata: [String : Any]) {
+        public init(id: UUID, rssi: NSNumber, advertisement: [String: Any], metadata: [String: Any]) {
             self.id = id
             self.rssi = rssi
             self.advertisement = advertisement
             self.metadata = metadata
         }
-
     }
 }
 
@@ -42,11 +41,11 @@ extension BlueticaCentral.Device: Equatable {
 
 // MARK: - BlueticaCentral.Device.Extension
 extension BlueticaCentral.Device {
-    
+
     public var peripheral: CBPeripheral? {
         self.metadata[id.uuidString] as? CBPeripheral
     }
-    
+
     public var name: String {
         peripheral?.name ?? "Unknown Device"
     }
@@ -54,12 +53,18 @@ extension BlueticaCentral.Device {
     public var state: PeripheralState {
         peripheral?.state.convert ?? .unknown
     }
-    
+
     public var identifier: UUID { id }
-    
+
     public var isConnected: Bool {
         peripheral?.state == .connected
     }
-    
+
+    mutating func peripheral(_ handler: () -> (CBPeripheral) ) -> Self {
+        self.metadata[id.uuidString] = peripheral
+        return self
+    }
+
 }
+
 // MARK: -

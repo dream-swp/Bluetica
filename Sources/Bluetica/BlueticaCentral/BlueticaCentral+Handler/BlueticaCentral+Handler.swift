@@ -58,7 +58,7 @@ extension BlueticaCentral.Handler {
     /// - Parameters:
     ///   - manager: 管理器实例
     ///   - info: 包含 central、peripheral
-    public typealias SuccessConnect = (_ manager: CentralManager, _ info: (central: CBCentralManager, peripheral: CBPeripheral)) -> Void
+    public typealias SuccessConnect = (_ manager: CentralManager, _ info: (device: BlueticaCentral.Device?, central: CBCentralManager, peripheral: CBPeripheral)) -> Void
     /// 链式设置连接成功回调
     public typealias SuccessConnectResult = (@escaping SuccessConnect) -> CentralResult
 
@@ -66,7 +66,7 @@ extension BlueticaCentral.Handler {
     /// - Parameters:
     ///   - manager: 管理器实例
     ///   - info: 包含 central、peripheral、error
-    public typealias FailConnect = (_ manager: CentralManager, _ info: (central: CBCentralManager, peripheral: CBPeripheral, error: Error?)) -> Void
+    public typealias FailConnect = (_ manager: CentralManager, _ info: (device: BlueticaCentral.Device?, central: CBCentralManager, peripheral: CBPeripheral, error: Error?)) -> Void
     /// 链式设置连接失败回调
     public typealias FailConnectResult = (@escaping FailConnect) -> CentralResult
 
@@ -74,7 +74,7 @@ extension BlueticaCentral.Handler {
     /// - Parameters:
     ///   - manager: 管理器实例
     ///   - info: 包含 central、peripheral、error
-    public typealias DisconnectPeripheral = (_ manager: CentralManager, _ info: (central: CBCentralManager, peripheral: CBPeripheral, error: Error?)) -> Void
+    public typealias DisconnectPeripheral = (_ manager: CentralManager, _ info: (device: BlueticaCentral.Device?, central: CBCentralManager, peripheral: CBPeripheral, error: Error?)) -> Void
     /// 链式设置外设断开回调
     public typealias DisconnectPeripheralResult = (@escaping DisconnectPeripheral) -> CentralResult
 
@@ -82,7 +82,7 @@ extension BlueticaCentral.Handler {
     /// - Parameters:
     ///   - manager: 管理器实例
     ///   - info: 包含 central、peripheral、timestamp、isReconnecting、error
-    public typealias DisconnectPeripheralTimestamp = (_ manager: CentralManager, _ info: (central: CBCentralManager, peripheral: CBPeripheral, timestamp: CFAbsoluteTime, isReconnecting: Bool, error: Error?)) -> Void
+    public typealias DisconnectPeripheralTimestamp = (_ manager: CentralManager, _ info: (device: BlueticaCentral.Device?, central: CBCentralManager, peripheral: CBPeripheral, timestamp: CFAbsoluteTime, isReconnecting: Bool, error: Error?)) -> Void
     /// 链式设置外设断开（带时间戳）回调
     public typealias DisconnectPeripheralTimestampResult = (@escaping DisconnectPeripheralTimestamp) -> CentralResult
 
