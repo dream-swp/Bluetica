@@ -32,7 +32,7 @@ struct BluetoothMainScanView: View {
         }
         .toggle(DeviceType.isIphone) {
             $0.sheet(item: device) { device in
-                NavigationView { BluetoothDeviceInfoView(device: device) }
+                NavigationView { BluetoothDeviceInfoView() }
             }
         }
     }

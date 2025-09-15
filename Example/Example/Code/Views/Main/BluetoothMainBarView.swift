@@ -39,7 +39,7 @@ extension BluetoothMainBarView {
         } detail: {
             EmptyView()
                 .toggle(device) { _, device in
-                BluetoothDeviceInfoView(device: device)
+                BluetoothDeviceInfoView()
             }
 
         }

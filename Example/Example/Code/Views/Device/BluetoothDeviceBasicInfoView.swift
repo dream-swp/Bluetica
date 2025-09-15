@@ -9,41 +9,46 @@ import SwiftUI
 
 struct BluetoothDeviceBasicInfoView: View {
 
-    let device: BluetoothDevice
+    @EnvironmentObject private var appStore: AppStore
 
     var body: some View {
-        VStack(spacing: 16) {
-            HStack {
-                icon
+        EmptyView()
+            .toggle(device) { _, device in
+                VStack(spacing: 16) {
+                    HStack {
+                        icon { device }
 
-                info
-            }
-            Spacer()
+                        info { device }
+                    }
+                    Spacer()
 
-            divider
-
-            EmptyView()
-                .toggle(primaryServices.count > 0) { _ in
-                    services { (title: "主服务", datas: primaryServices) }
                     divider
 
-                }
+                    EmptyView()
+                        .toggle(primaryServices { device }.count > 0) { _ in
+                            services { (title: "主服务", datas: primaryServices { device }) }
+                            divider
 
-            EmptyView()
-                .toggle(advertisement.count > 0) { _ in
-                    services { (title: "广播数据", datas: advertisement) }
+                        }
+
+                    EmptyView()
+                        .toggle(advertisement { device }.count > 0) { _ in
+                            services { (title: "广播数据", datas: advertisement { device }) }
+                        }
                 }
-        }
-        .padding(25)
-        .background(alignment: .center) { bluetoothBackgroundCardStyle.padding(10) }
+            }
+            
+            .padding(25)
+            .background(alignment: .center) { bluetoothBackgroundCardStyle.padding(10) }
 
     }
 }
 extension BluetoothDeviceBasicInfoView {
 
-    var icon: some View {
+    private func icon(_ handler: () -> (BluetoothDevice)) -> some View {
         VStack {
-            Image(systemName: device.name.deviceIcon { false })
+            let device = handler()
+            Image(systemName: device.name.deviceIcon { device.isConnected })
                 .font(.largeTitle)
                 .foregroundStyle(device.isConnected.connectedColor)
 
@@ -53,8 +58,9 @@ extension BluetoothDeviceBasicInfoView {
         }
     }
 
-    var info: some View {
+    private func info(_ handler: () -> (BluetoothDevice)) -> some View {
         VStack(alignment: .leading, spacing: 8) {
+            let device = handler()
             Text("设备名称")
                 .font(.title2)
                 .fontWeight(.bold)
@@ -65,12 +71,13 @@ extension BluetoothDeviceBasicInfoView {
                 .font(.caption)
                 .foregroundStyle(.secondary)
                 .textSelection(.enabled)
-            status
+            status { device }
         }
     }
 
-    var status: some View {
+    private func status(_ handler: () -> (BluetoothDevice)) -> some View {
         HStack {
+            let device = handler()
             Text("信号强度:")
                 .font(.caption)
                 .foregroundStyle(.secondary)
@@ -82,11 +89,11 @@ extension BluetoothDeviceBasicInfoView {
             Text(device.state.description)
                 .font(.caption)
                 .fontWeight(.medium)
-                .foregroundStyle(false.connectedColor)
+                .foregroundStyle(device.isConnected.connectedColor)
         }
     }
 
-    func services(_ datas: () -> (title: String, datas: [GridData])) -> some View {
+    private func services(_ datas: () -> (title: String, datas: [GridData])) -> some View {
 
         let result = datas()
 
@@ -100,7 +107,9 @@ extension BluetoothDeviceBasicInfoView {
                     columns: [
                         GridItem(.flexible(), alignment: .leading),
                         GridItem(.flexible(), alignment: .leading),
-                    ], spacing: 8) {
+                    ],
+                    spacing: 8
+                ) {
                     ForEach(result.datas) { data in
                         VStack(alignment: .leading, spacing: 2) {
                             Text(data.key)
@@ -124,7 +133,7 @@ extension BluetoothDeviceBasicInfoView {
 }
 
 extension BluetoothDeviceBasicInfoView {
-    struct GridData: Identifiable {
+    private struct GridData: Identifiable {
         let id: UUID = UUID()
         let key: String
         let value: String
@@ -133,8 +142,9 @@ extension BluetoothDeviceBasicInfoView {
 
 extension BluetoothDeviceBasicInfoView {
 
-    var primaryServices: [GridData] {
+    private func primaryServices(_ handler: () -> (BluetoothDevice)) -> [GridData] {
 
+        let device = handler()
         let uuids = device.services
         let names = device.serviceNames
         var result: [GridData] = []
@@ -147,11 +157,11 @@ extension BluetoothDeviceBasicInfoView {
         return result
     }
 
-    var advertisement: [GridData] {
+    private func advertisement(_ handler: () -> (BluetoothDevice)) -> [GridData] {
 
+        let device = handler()
         let data = device.advertisement
         let keys = data.keys
-
         var result: [GridData] = []
         for key in keys {
             if let value = data[key] {
@@ -162,8 +172,13 @@ extension BluetoothDeviceBasicInfoView {
 
         return result
     }
+    
+    private var device: BluetoothDevice? {
+        appStore.appState.bluetooth.device
+    }
 }
 
 #Preview {
-    //    BluetoothDeviceBasicInfoView()
+    BluetoothDeviceBasicInfoView()
+        .environmentObject(AppStore())
 }

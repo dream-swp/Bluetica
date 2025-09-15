@@ -81,14 +81,8 @@ extension BluetoothScanDeviceCell {
             
             Text(device.state.description)
                 .font(.caption)
-                .foregroundStyle(.secondary)
-//                .toggle(device.isConnected) { _ in
-//                    Text("已连接")
-//                        .font(.caption)
-//                        .foregroundStyle(.secondary)
-//                        .fontWeight(.bold)
-//                }
-
+                .foregroundStyle(device.isConnected.connectedColor)
+            
             EmptyView()
                 .toggle(device.isServices) { _ in
                     Text("\(device.services.count) 个服务")

@@ -41,4 +41,15 @@ struct BluetoothDevice: Identifiable {
     
 }
 
+extension BluetoothDevice: Equatable {
+    
+    static func == (lhs: Self, rhs: Self) -> Bool {
+        lhs.id == rhs.id
+    }
+    
+    static func != (lhs: Self, rhs: Self) -> Bool {
+        lhs.id == rhs.id
+    }
+}
+
 

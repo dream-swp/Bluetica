@@ -10,13 +10,13 @@ import SwiftUI
 
 struct BluetoothDeviceInfoView: View {
 
-    let device: BluetoothDevice
-
+    @EnvironmentObject private var appStore: AppStore
+    
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
         ScrollView {
-            BluetoothDeviceBasicInfoView(device: device)
+            BluetoothDeviceBasicInfoView()
         }
         .navigationTitle("设备详情")
         .navigationBarTitleDisplayModeCompat()
