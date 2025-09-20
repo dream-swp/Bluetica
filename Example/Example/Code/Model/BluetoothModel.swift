@@ -12,11 +12,9 @@ struct BluetoothModel {
     var isEnabled = false
 
     var status = "等待蓝牙初始化..."
-    
-    var isConnected = false
 
     var devices: [BluetoothDevice] = []
-    
+
     var device: BluetoothDevice?
 }
 
@@ -36,4 +34,3 @@ extension BluetoothModel {
         devices.count > 0
     }
 }
-

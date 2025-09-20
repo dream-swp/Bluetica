@@ -14,8 +14,7 @@ enum BluetoothAction: ActionProtocol {
 
     case device(BluetoothDevice)
     case connect(BluetoothDevice)
-    case disconnect(BluetoothDevice?, Bool)
-//    case disconnectAll
+    case cleares
 
     var command: AppCommand? {
         switch self {
@@ -31,9 +30,10 @@ enum BluetoothAction: ActionProtocol {
             BluetoothDeviceCommand(device: device)
         case .connect(let device):
             BluetoothConnectCommand(device: device)
-        case .disconnect(let device, let isAll):
-            BluetoothDisconnectCommand(device: device, isClearAll: isAll)
+        case .cleares:
+            BluetoothClearesDeviceCommand()
         }
     }
 
 }
+

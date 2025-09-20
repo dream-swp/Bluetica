@@ -8,11 +8,12 @@
 struct BluetoothViewModel {
 
     var statusCarStyle: BluetoothStatusCardStyle = .statusCarStyle
-    var startButtonStyle: BluetoothButtonStyle = .startStyle
-    var stopButtonStyle: BluetoothButtonStyle = .stopStyle
-    var clearButtonStyle: BluetoothButtonStyle = .clearStyle
+    
+    let startButtonStyle: BluetoothButtonStyle = .startStyle
+    let stopButtonStyle: BluetoothButtonStyle = .stopStyle
+    let clearButtonStyle: BluetoothButtonStyle = .clearStyle
+    let connectButtnStyle: BluetoothButtonStyle = .connectStyle
+    let infoButtnStyle: BluetoothButtonStyle = .infoStyle
+
+    var deviceInfoButtons: [BluetoothButtonStyle] = [.disconnectStyle, .subscribeStyle, .refreshFeatureStyle, .characteristicCountStyle]
 }
-
-
-
-

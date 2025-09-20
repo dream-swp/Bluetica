@@ -9,9 +9,14 @@ import SwiftUI
 
 extension View {
 
+//    @ViewBuilder
+//    func toggle<T: View>(_ isToggle: Bool, @ViewBuilder toggle: (Self) -> T) -> some View {
+//        toggle
+//    }
+    
     @ViewBuilder
-    func toggle<T: View>(_ isToggle: Bool, @ViewBuilder toggle: (Self) -> T) -> some View {
-        if isToggle {
+    func toggle<T: View>(_ isToggle: Bool?, @ViewBuilder toggle: (Self) -> T) -> some View {
+        if let isToggle = isToggle, isToggle {
             toggle(self)
         } else {
             self
@@ -26,6 +31,9 @@ extension View {
             self
         }
     }
+    
+    
+
     
 }
 

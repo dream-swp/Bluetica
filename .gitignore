@@ -64,3 +64,5 @@ fastlane/test_output
 .swiftpm/xcode/.DS_Store
 .swiftpm/.DS_Store
 .DS_Store
+.Demo/
+.log.txt

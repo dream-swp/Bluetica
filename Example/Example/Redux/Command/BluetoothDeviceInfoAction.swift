@@ -1,0 +1,23 @@
+//
+//  BluetoothDeviceInfoAction.swift
+//  Example
+//
+//  Created by Dream on 2025/9/20.
+//
+
+
+enum BluetoothDeviceInfoAction: ActionProtocol {
+
+    case deviceInfoButtons(BluetoothDevice?, BluetoothDeviceInfoButtons.ButtonType)
+
+    var command: AppCommand? {
+        
+        switch self {
+        case .deviceInfoButtons(let device, let command):
+            BluetoothDeviceInfoButtonsCommand(device: device, command: command)
+        }
+    }
+
+}
+
+

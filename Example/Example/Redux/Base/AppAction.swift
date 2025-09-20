@@ -12,11 +12,12 @@ protocol ActionProtocol { var command: AppCommand? { get } }
 enum AppAction: ActionProtocol {
     
     case bluetooth(BluetoothAction)
+    case deviceInfo(BluetoothDeviceInfoAction)
     
     var command: AppCommand? {
         switch self {
-        case .bluetooth(let value):
-            value.command
+        case .bluetooth(let value): value.command
+        case .deviceInfo(let value): value.command
         }
     }
 }

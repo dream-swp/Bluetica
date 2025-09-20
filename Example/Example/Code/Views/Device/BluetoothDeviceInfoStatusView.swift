@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct BluetoothDeviceBasicInfoView: View {
+struct BluetoothDeviceInfoStatusView: View {
 
     @EnvironmentObject private var appStore: AppStore
 
@@ -26,24 +26,24 @@ struct BluetoothDeviceBasicInfoView: View {
 
                     EmptyView()
                         .toggle(primaryServices { device }.count > 0) { _ in
-                            services { (title: "主服务", datas: primaryServices { device }) }
+                            services { (title: "主服务", columns, datas: primaryServices { device }) }
                             divider
 
                         }
 
                     EmptyView()
                         .toggle(advertisement { device }.count > 0) { _ in
-                            services { (title: "广播数据", datas: advertisement { device }) }
+                            services { (title: "广播数据", columns, datas: advertisement { device }) }
                         }
                 }
             }
-            
+
             .padding(25)
             .background(alignment: .center) { bluetoothBackgroundCardStyle.padding(10) }
 
     }
 }
-extension BluetoothDeviceBasicInfoView {
+extension BluetoothDeviceInfoStatusView {
 
     private func icon(_ handler: () -> (BluetoothDevice)) -> some View {
         VStack {
@@ -93,46 +93,39 @@ extension BluetoothDeviceBasicInfoView {
         }
     }
 
-    private func services(_ datas: () -> (title: String, datas: [GridData])) -> some View {
+    private func services(_ datas: () -> (title: String, columns: [GridItem], datas: [GridData])) -> some View {
 
         let result = datas()
 
-        return EmptyView().toggle(true) { _ in
+        return EmptyView()
+            .toggle(true) { _ in
+                VStack(alignment: .leading, spacing: 8) {
+                    Text(result.title)
+                        .font(.headline)
+                        .foregroundColor(.primary)
+                    LazyVGrid(columns: result.columns, spacing: 8) {
+                        ForEach(result.datas) { data in
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(data.key)
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
 
-            VStack(alignment: .leading, spacing: 8) {
-                Text(result.title)
-                    .font(.headline)
-                    .foregroundColor(.primary)
-                LazyVGrid(
-                    columns: [
-                        GridItem(.flexible(), alignment: .leading),
-                        GridItem(.flexible(), alignment: .leading),
-                    ],
-                    spacing: 8
-                ) {
-                    ForEach(result.datas) { data in
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text(data.key)
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-
-                            Text(data.value)
-                                .font(.caption2)
-                                .foregroundStyle(.primary)
-                                .textSelection(.enabled)
+                                Text(data.value)
+                                    .font(.caption2)
+                                    .foregroundStyle(.primary)
+                                    .textSelection(.enabled)
+                            }
+                            .padding(.vertical, 4)
                         }
-                        .padding(.vertical, 4)
-                    }
 
+                    }
                 }
             }
-
-        }
     }
 
 }
 
-extension BluetoothDeviceBasicInfoView {
+extension BluetoothDeviceInfoStatusView {
     private struct GridData: Identifiable {
         let id: UUID = UUID()
         let key: String
@@ -140,7 +133,7 @@ extension BluetoothDeviceBasicInfoView {
     }
 }
 
-extension BluetoothDeviceBasicInfoView {
+extension BluetoothDeviceInfoStatusView {
 
     private func primaryServices(_ handler: () -> (BluetoothDevice)) -> [GridData] {
 
@@ -172,13 +165,21 @@ extension BluetoothDeviceBasicInfoView {
 
         return result
     }
-    
+
     private var device: BluetoothDevice? {
         appStore.appState.bluetooth.device
     }
+
+    private var columns: [GridItem] {
+        [
+            GridItem(.flexible(), alignment: .leading),
+            GridItem(.flexible(), alignment: .leading),
+        ]
+    }
+
 }
 
 #Preview {
-    BluetoothDeviceBasicInfoView()
+    BluetoothDeviceInfoStatusView()
         .environmentObject(AppStore())
 }

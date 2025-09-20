@@ -30,7 +30,7 @@ struct BluetoothMainScanView: View {
         .onAppear {
             appStore.dispatch(.bluetooth(.status))
         }
-        .toggle(DeviceType.isIphone) {
+        .toggle(DeviceType.isIphone || DeviceType.isIpad) {
             $0.sheet(item: device) { device in
                 NavigationView { BluetoothDeviceInfoView() }
             }

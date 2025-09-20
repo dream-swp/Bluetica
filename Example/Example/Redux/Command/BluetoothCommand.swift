@@ -51,10 +51,11 @@ struct BluetoothStateCommand: AppCommand, AppUpdateData {
     }
 }
 
-struct BluetoothStartCommand: AppCommand, AppUpdateData {
+struct BluetoothStartCommand: AppCommand {
 
     func execute(_ store: AppStore, action: AppAction) {
 
+        if store.appState.bluetooth.isEnabled == false { return }
         store.appState.bluetica
             .central
             .config {
@@ -64,33 +65,20 @@ struct BluetoothStartCommand: AppCommand, AppUpdateData {
                 store.dispatch(.bluetooth(.stop))
             }
             .start
+        store.appState.bluetooth.isScanning = true
         store.dispatch(.bluetooth(.scan))
     }
 
-    var update: (() -> (state: AppState, action: AppAction)) -> AppState {
-        return {
-            var state = $0().state
-            state.bluetooth.isScanning = true
-            return state
-        }
-    }
 }
 
-struct BluetoothStopCommand: AppCommand, AppUpdateData {
+struct BluetoothStopCommand: AppCommand {
+
     func execute(_ store: AppStore, action: AppAction) {
         let _ = store.appState.bluetica
             .central
             .stop
+        store.appState.bluetooth.isScanning = false
     }
-
-    var update: (() -> (state: AppState, action: AppAction)) -> AppState {
-        return {
-            var state = $0().state
-            state.bluetooth.isScanning = false
-            return state
-        }
-    }
-
 }
 
 struct BluetoothScanCommand: AppCommand {
@@ -107,22 +95,16 @@ struct BluetoothScanCommand: AppCommand {
     }
 }
 
-struct BluetoothDeviceCommand: AppCommand, AppUpdateData {
-    
+struct BluetoothDeviceCommand: AppCommand {
+
     var device: BluetoothDevice
 
-    func execute(_ store: AppStore, action: AppAction) {}
-
-    var update: (() -> (state: AppState, action: AppAction)) -> AppState {
-        return {
-            var state = $0().state
-            state.bluetooth.device = device
-            return state
-        }
+    func execute(_ store: AppStore, action: AppAction) {
+        store.appState.bluetooth.device = device
     }
 }
 
-struct BluetoothConnectCommand: AppCommand, AppUpdateData {
+struct BluetoothConnectCommand: AppCommand {
 
     let device: BluetoothDevice
 
@@ -140,32 +122,13 @@ struct BluetoothConnectCommand: AppCommand, AppUpdateData {
                     info.device.map { store.appState.bluetooth.device = BluetoothDevice(device: $0) }
                 }
             }
-
     }
-
-    var update: (() -> (state: AppState, action: AppAction)) -> AppState {
-        return { $0().state }
-    }
-
 }
 
-struct BluetoothDisconnectCommand: AppCommand, AppUpdateData {
-
-    var device: BluetoothDevice?
-    var isClearAll = true
-
+struct BluetoothClearesDeviceCommand: AppCommand {
     func execute(_ store: AppStore, action: AppAction) {
-
-        if isClearAll {
-            let _ = store.appState.bluetica.central.clearDevice
-            store.appState.bluetooth.devices.removeAll()
-            store.appState.bluetooth.device = nil
-        }
-
+        let _ = store.appState.bluetica.central.clearDevice
+        store.appState.bluetooth.devices.removeAll()
+        store.appState.bluetooth.device = nil
     }
-
-    var update: (() -> (state: AppState, action: AppAction)) -> AppState {
-        return { $0().state }
-    }
-
 }

@@ -10,8 +10,10 @@ import SwiftUI
 
 struct BluetoothScanDeviceCell: View {
 
+    @EnvironmentObject private var appStore: AppStore
+
     let device: BluetoothDevice
-    
+
     let action: (Bool) -> Void
 
     var body: some View {
@@ -24,8 +26,8 @@ struct BluetoothScanDeviceCell: View {
             }
 
             button
-        }.padding(30)
-        
+        }
+        .padding(30)
         .background(alignment: .center) {
             bluetoothBackgroundCardStyle
                 .padding()
@@ -49,7 +51,7 @@ extension BluetoothScanDeviceCell {
                 .font(.headline)
                 .foregroundStyle(.bluetoothText)
                 .lineLimit(1)
-            
+
             Text(device.identifierInfo)
                 .font(.caption)
                 .foregroundColor(.secondary)
@@ -68,7 +70,7 @@ extension BluetoothScanDeviceCell {
                     .foregroundColor(.blue)
                     .lineLimit(1)
             }
-       
+
     }
 
     private var signalStatusView: some View {
@@ -78,11 +80,10 @@ extension BluetoothScanDeviceCell {
                 .foregroundStyle(device.rssiValue.rssiColor)
                 .fontWeight(.medium)
 
-            
             Text(device.state.description)
                 .font(.caption)
                 .foregroundStyle(device.isConnected.connectedColor)
-            
+
             EmptyView()
                 .toggle(device.isServices) { _ in
                     Text("\(device.services.count) 个服务")
@@ -93,44 +94,19 @@ extension BluetoothScanDeviceCell {
                         .background(.blue.opacity(0.1))
                         .clipShape(RoundedRectangle(cornerRadius: 4))
                 }
-           
+
         }
     }
 
+    @ViewBuilder
     private var button: some View {
-        Button {
+        BluetoothButton(appStore.appState.bluetoothViewModel.connectButtnStyle) {
             action(false)
-        } label: {
-            HStack {
-                Image(systemName: "link")
-                Text("连接设备")
-            }
-            .frame(maxWidth: .infinity)
-            .padding(.vertical, 8)
-            .background(Color.blue)
-            .foregroundColor(.white)
-            .clipShape(RoundedRectangle(cornerRadius: 8))
         }
-        .buttonStyle(.plain)
         .toggle(device.isConnected) { _ in
-            Button {
+            BluetoothButton(appStore.appState.bluetoothViewModel.infoButtnStyle) {
                 action(true)
-            } label: {
-                HStack {
-                    Image(systemName: "info.circle")
-                    Text("查看详情")
-                }
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 8)
-                .background(Color.green)
-                .foregroundColor(.white)
-                .clipShape(RoundedRectangle(cornerRadius: 8))
             }
-            .buttonStyle(.plain)
         }
     }
-}
-
-#Preview {
-    //    BluetoothDeviceCard(device: BluetoothDevice(peripheral: CBPeripheral(), rssi: <#NSNumber#>, advertisementData: <#[String : Any]#>))
 }

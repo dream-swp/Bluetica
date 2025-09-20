@@ -7,20 +7,21 @@
 
 import SwiftUI
 
-
 struct BluetoothScanDeviceList: View {
 
     @EnvironmentObject private var appStore: AppStore
-    
+
     var body: some View {
 
         headerView
             .padding()
 
-        placeholderView
-            .toggle(isDevices) { _ in
-                listView
-            }
+        BluetoothPlaceholderView {
+            ("list.bullet.rectangle.fill", "暂无发现设备", "请点击\"开始扫描\"按钮搜索附近的蓝牙设备")
+        }
+        .toggle(isDevices) { _ in
+            listView
+        }
     }
 }
 
@@ -50,28 +51,11 @@ extension BluetoothScanDeviceList {
         }
     }
 
-    var placeholderView: some View {
-
-        VStack(spacing: 12) {
-            Image(systemName: "antenna.radiowaves.left.and.right.slash")
-                .font(.largeTitle)
-                .foregroundStyle(.secondary)
-            Text("暂无发现设备")
-                .font(.headline)
-                .foregroundStyle(.secondary)
-
-            Text("请点击\"开始扫描\"按钮搜索附近的蓝牙设备")
-                .font(.caption)
-                .foregroundStyle(.secondary)
-                .multilineTextAlignment(.center)
-        }
-    }
-
     var listView: some View {
         ScrollView {
             ForEach(bluetooth.devices) { data in
                 BluetoothScanDeviceCell(device: data) {
-                    appStore.dispatch(.bluetooth($0 ? .device(data) :.connect(data)))
+                    appStore.dispatch(.bluetooth($0 ? .device(data) : .connect(data)))
                 }
                 .onTapGesture {
                     appStore.dispatch(.bluetooth(.device(data)))
@@ -83,7 +67,7 @@ extension BluetoothScanDeviceList {
 
 extension BluetoothScanDeviceList {
     private var bluetooth: BluetoothModel { appStore.appState.bluetooth }
-    
+
     private var isDevices: Bool { bluetooth.isDevices }
 }
 
