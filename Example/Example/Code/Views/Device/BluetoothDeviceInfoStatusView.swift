@@ -138,7 +138,7 @@ extension BluetoothDeviceInfoStatusView {
     private func primaryServices(_ handler: () -> (BluetoothDevice)) -> [GridData] {
 
         let device = handler()
-        let uuids = device.services
+        let uuids = device.serviceUUIDs
         let names = device.serviceNames
         var result: [GridData] = []
         for (index, uuid) in uuids.enumerated() {

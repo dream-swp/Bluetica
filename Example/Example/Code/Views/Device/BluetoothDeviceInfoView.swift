@@ -20,6 +20,9 @@ struct BluetoothDeviceInfoView: View {
             placeholderView
                 .toggle(isConnected) { _ in
                     BluetoothDeviceInfoButtons()
+                    
+                    BluetoothDeviceInfoServicesView()
+                    
                 }
                 
 

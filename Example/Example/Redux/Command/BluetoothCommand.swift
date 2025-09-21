@@ -122,6 +122,12 @@ struct BluetoothConnectCommand: AppCommand {
                     info.device.map { store.appState.bluetooth.device = BluetoothDevice(device: $0) }
                 }
             }
+            .discoverServices { manager, info in
+                store.appState.bluetooth.servicesMessage = "自动检索服务成功"
+            }
+            .discoverCharacteristics { manager, info in
+                print("123123")
+            }
     }
 }
 

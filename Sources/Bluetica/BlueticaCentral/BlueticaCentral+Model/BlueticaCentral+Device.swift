@@ -54,17 +54,62 @@ extension BlueticaCentral.Device {
         peripheral?.state.convert ?? .unknown
     }
 
-    public var identifier: UUID { id }
+    public var identifier: UUID { peripheral?.identifier ?? id }
 
     public var isConnected: Bool {
         peripheral?.state == .connected
     }
 
-    mutating func peripheral(_ handler: () -> (CBPeripheral) ) -> Self {
+    mutating func peripheral(_ handler: () -> (CBPeripheral)) -> Self {
         self.metadata[id.uuidString] = peripheral
         return self
     }
 
+    public var services: [BlueticaCentral.Service] {
+        peripheral?.services?.compactMap { BlueticaCentral.Service(service: $0) } ?? []
+    }
+
+    public var characteristics: [BlueticaCentral.Characteristic] {
+        var result: [BlueticaCentral.Characteristic] = []
+        peripheral?.services?.forEach {
+            result = $0.characteristics?.compactMap { BlueticaCentral.Characteristic(characteristic: $0) } ?? []
+        }
+        return result
+    }
+    
+    public var serviceCharacteristics: [(service: BlueticaCentral.Service, characteristic: BlueticaCentral.Characteristic)] {
+        var result: [(service: BlueticaCentral.Service, characteristic: BlueticaCentral.Characteristic)] = []
+        peripheral?.services?.forEach { aService in
+            aService.characteristics?.forEach {
+                let service = BlueticaCentral.Service(service: aService)
+                let characteristic = BlueticaCentral.Characteristic(characteristic: $0)
+                result.append((service: service, characteristic: characteristic))
+            }
+        }
+        return result
+    }
+
 }
 
+extension BlueticaCentral {
+
+    public struct Service: Identifiable {
+        public var id: UUID {
+            service.peripheral?.identifier ?? UUID()
+        }
+        public let service: CBService
+    }
+
+}
+
+extension BlueticaCentral {
+
+    public struct Characteristic: Identifiable {
+        public var id: UUID {
+            characteristic.service?.peripheral?.identifier ?? UUID()
+        }
+        public let characteristic: CBCharacteristic
+    }
+
+}
 // MARK: -

@@ -15,14 +15,8 @@ public protocol BlueticaBridge { }
 /// Bluetica 主类型桥接
 extension Bluetica: BlueticaBridge { }
 
-/// BlueticaCentral 管理器桥接
-extension BlueticaCentral.Manager: BlueticaBridge { }
 /// BlueticaCentral 中心桥接
 extension BlueticaCentral.Central: BlueticaBridge { }
-/// BlueticaCentral 外设桥接
-extension BlueticaCentral.Peripheral: BlueticaBridge { }
-
-
 
 /// Bluetica 外设桥接
 extension BlueticaPeripheral: BlueticaBridge { }

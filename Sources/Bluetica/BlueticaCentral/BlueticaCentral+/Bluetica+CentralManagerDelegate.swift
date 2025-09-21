@@ -53,59 +53,40 @@ extension Bluetica: CBCentralManagerDelegate {
 
     /// 成功连接外设时回调
     public func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
-        
-        self.central.stop
-        
-        var device = blueticaCentral.peripherals.discover.device { peripheral.identifier }
-        
+
+        let _ = self.central.stop
+
         //  设置代理
         peripheral.delegate = self
-        
-        blueticaCentral.connected.device = device?.peripheral { peripheral }
-        blueticaCentral.connected.peripheral = peripheral
+
+        let device = blueticaCentral.peripherals.updateDiscover { peripheral }.device
         blueticaCentral.peripherals.connected.append(to: device)
-        
+
         //  发现服务
-        if blueticaCentral.peripheralConfig.isDiscoverServices {
+        if blueticaCentral.peripheralConfig.isAutoDiscoverServices {
             peripheral.discoverServices(blueticaCentral.peripheralConfig.discoverServices)
         }
-    
-        blueticaCentral.centralHandler.connectSuccess?(self, (device: blueticaCentral.connected.device, central: central, peripheral: peripheral))
+
+        blueticaCentral.centralHandler.connectSuccess?(self, (device: device, central: central, peripheral: peripheral))
     }
 
     /// 连接外设失败时回调
     public func centralManager(_ central: CBCentralManager, didFailToConnect peripheral: CBPeripheral, error: Error?) {
 
-        var device = blueticaCentral.peripherals.discover.device { peripheral.identifier }
-        
-        device = device?.peripheral { peripheral }
-        
-        let _ = blueticaCentral.peripherals.discover.replace { device }
-        
+        let device = blueticaCentral.peripherals.updateDiscover { peripheral }.device
         blueticaCentral.centralHandler.connectFailure?(self, (device: device, central: central, peripheral: peripheral, error: error))
     }
 
     /// 外设断开连接时回调
     public func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
-
-        var device = blueticaCentral.peripherals.connected.device { peripheral.identifier }
-        
-        device = device?.peripheral { peripheral }
-        
-        let _ = blueticaCentral.peripherals.connected.replace {  device }
-        
+        let device = blueticaCentral.peripherals.updateConnected { peripheral }.device
         blueticaCentral.centralHandler.disconnectPeripheral?(self, (device: device, central: central, peripheral: peripheral, error: error))
     }
 
     /// 外设断开连接（带时间戳）时回调
     public func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, timestamp: CFAbsoluteTime, isReconnecting: Bool, error: Error?) {
-       
-        var device = blueticaCentral.peripherals.connected.device { peripheral.identifier }
-        
-        device = device?.peripheral { peripheral }
-        
-        let _ = blueticaCentral.peripherals.connected.replace {  device }
-        
+
+        let device = blueticaCentral.peripherals.updateConnected { peripheral }.device
         blueticaCentral.centralHandler.disconnectPeripheralTimestamp?(self, (device: device, central: central, peripheral: peripheral, timestamp: timestamp, isReconnecting: isReconnecting, error: error))
     }
 
@@ -150,22 +131,28 @@ extension Bluetica: CBPeripheralDelegate {
 
         if let error = error {
             print("didDiscoverServices >>> error = \(error.localizedDescription)")
-            blueticaCentral.peripheralHandler.discoverServices?(self, (peripheral: peripheral, error: error))
+            blueticaCentral.peripheralHandler.discoverServices?(self, (device: nil, peripheral: peripheral, error: error))
             return
         }
-
-        var services: [CBService] = blueticaCentral.peripherals.services
-        peripheral.services?.forEach {
-            peripheral.discoverCharacteristics(blueticaCentral.peripheralConfig.discoverCharacteristics, for: $0)
-            services.append($0)
+        if blueticaCentral.peripheralConfig.isAutoDiscoverCharacteristics {
+            peripheral.services?.forEach {
+                peripheral.discoverCharacteristics(blueticaCentral.peripheralConfig.discoverCharacteristics, for: $0)
+            }
         }
-        blueticaCentral.peripherals.services = services
-        blueticaCentral.peripheralHandler.discoverServices?(self, (peripheral: peripheral, error: error))
+
+        let device = blueticaCentral.peripherals.updateConnected { peripheral }.device
+        blueticaCentral.peripheralHandler.discoverServices?(self, (device: device, peripheral: peripheral, error: error))
     }
 
     /// 发现包含服务时回调
     public func peripheral(_ peripheral: CBPeripheral, didDiscoverIncludedServicesFor service: CBService, error: Error?) {
-        blueticaCentral.peripheralHandler.discoverIncludedServices?(self, (peripheral: peripheral, service: service, error: error))
+        if let error = error {
+            print("didDiscoverCharacteristicsFor >>> error = \(error.localizedDescription)")
+            blueticaCentral.peripheralHandler.discoverIncludedServices?(self, (device: nil, peripheral: peripheral, service: service, error: error))
+            return
+        }
+        let device = blueticaCentral.peripherals.updateConnected { peripheral }.device
+        blueticaCentral.peripheralHandler.discoverIncludedServices?(self, (device: device, peripheral: peripheral, service: service, error: error))
     }
 
     /// 发现特征值时回调
@@ -173,15 +160,11 @@ extension Bluetica: CBPeripheralDelegate {
 
         if let error = error {
             print("didDiscoverCharacteristicsFor >>> error = \(error.localizedDescription)")
-            blueticaCentral.peripheralHandler.discoverCharacteristics?(self, (peripheral: peripheral, service: service, error: error))
+            blueticaCentral.peripheralHandler.discoverCharacteristics?(self, (device: nil, peripheral: peripheral, service: service, error: error))
             return
         }
-        var characteristic: [CBCharacteristic] = blueticaCentral.peripherals.characteristics
-        service.characteristics?.forEach {
-            characteristic.append($0)
-        }
-        blueticaCentral.peripherals.characteristics = characteristic
-        blueticaCentral.peripheralHandler.discoverCharacteristics?(self, (peripheral: peripheral, service: service, error: error))
+        let device = blueticaCentral.peripherals.updateConnected { peripheral }.device
+        blueticaCentral.peripheralHandler.discoverCharacteristics?(self, (device: device, peripheral: peripheral, service: service, error: error))
     }
 
     /// 特征值更新时回调

@@ -86,7 +86,7 @@ extension BluetoothScanDeviceCell {
 
             EmptyView()
                 .toggle(device.isServices) { _ in
-                    Text("\(device.services.count) 个服务")
+                    Text("\(device.serviceUUIDs.count) 个服务")
                         .font(.caption2)
                         .foregroundColor(.blue)
                         .padding(.horizontal, 6)

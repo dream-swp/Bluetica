@@ -31,13 +31,19 @@ struct BluetoothDevice: Identifiable {
 
     var identifierInfo: String { "UUID: \(device.identifier.uuidString.prefix(8))..." }
     
-    var services: [CBUUID] {  device.metadata.ba.serviceUUIDs }
+    var serviceUUIDs: [CBUUID] {  device.metadata.ba.serviceUUIDs }
     
-    var serviceNames: [String] {  services.map { "自定义服务 (\($0.uuidString.prefix(8)))" } }
+    var serviceNames: [String] {  serviceUUIDs.map { "自定义服务 (\($0.uuidString.prefix(8)))" } }
     
-    var isServices: Bool { services.count > 0 }
+    var isServices: Bool { serviceUUIDs.count > 0 }
     
     var advertisement: [String: Any] { device.advertisement }
+    
+    var services: [BlueticaCentral.Service] { device.services }
+    
+    var characteristics: [BlueticaCentral.Characteristic] { device.characteristics }
+    
+    var serviceCharacteristics: [(service: BlueticaCentral.Service, characteristic: BlueticaCentral.Characteristic)] { device.serviceCharacteristics }
     
 }
 

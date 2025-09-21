@@ -120,7 +120,7 @@ extension BlueticaCentral.Handler {
     /// 外设管理器类型
     public typealias PeripheralManager = Bluetica
     /// 外设回调链式返回类型
-    public typealias PeripheralResult = BlueticaCentral.Peripheral<Bluetica>
+    public typealias PeripheralResult = BlueticaCentral.Central<Bluetica>
 
     /// 外设名称更新回调
     /// - Parameters:
@@ -158,12 +158,12 @@ extension BlueticaCentral.Handler {
     /// - Parameters:
     ///   - manager: 管理器实例
     ///   - info: 包含外设和错误信息
-    public typealias DiscoverServices = (_ manager: PeripheralManager, _ info: (peripheral: CBPeripheral, error: Error?)) -> Void
+    public typealias DiscoverServices = (_ manager: PeripheralManager, _ info: (device: BlueticaCentral.Device?, peripheral: CBPeripheral, error: Error?)) -> Void
     /// 链式设置服务发现回调
     public typealias DiscoverServicesResult = (@escaping DiscoverServices) -> PeripheralResult
 
     /// 服务信息元组
-    public typealias Service = (peripheral: CBPeripheral, service: CBService, error: Error?)
+    public typealias Service = (device: BlueticaCentral.Device?, peripheral: CBPeripheral, service: CBService, error: Error?)
 
     /// 包含服务发现回调
     /// - Parameters:

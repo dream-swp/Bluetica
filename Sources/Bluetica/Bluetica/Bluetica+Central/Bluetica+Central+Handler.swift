@@ -221,21 +221,21 @@ extension BlueticaCentral.Central where Central == Bluetica {
 
 }
 
-extension BlueticaCentral.Peripheral where Peripheral == Bluetica {
+extension BlueticaCentral.Central where Central == Bluetica {
     /// 设置外设名称更新回调
     /// - Parameter handler: 名称更新事件闭包
     /// - Returns: Self，便于链式调用
     @discardableResult
     public func updateName(_ handler: @escaping BlueticaCentral.Handler.UpdateName) -> Self {
-        peripheral.blueticaCentral.peripheralHandler.updateName = handler
+        central.blueticaCentral.peripheralHandler.updateName = handler
         return self
     }
 
     /// 链式设置外设名称更新回调
     public var updateName: BlueticaCentral.Handler.UpdateNameResult {
-        return { [weak peripheral] in
-            peripheral?.blueticaCentral.peripheralHandler.updateName = $0
-            return Bluetica.default.peripheral
+        return { [weak central] in
+            central?.blueticaCentral.peripheralHandler.updateName = $0
+            return Bluetica.default.central
         }
     }
 
@@ -244,15 +244,15 @@ extension BlueticaCentral.Peripheral where Peripheral == Bluetica {
     /// - Returns: Self，便于链式调用
     @discardableResult
     public func modifyServices(_ handler: @escaping BlueticaCentral.Handler.ModifyServices) -> Self {
-        peripheral.blueticaCentral.peripheralHandler.modifyServices = handler
+        central.blueticaCentral.peripheralHandler.modifyServices = handler
         return self
     }
 
     /// 链式设置服务变更回调
     public var modifyServices: BlueticaCentral.Handler.ModifyServicesResult {
-        return { [weak peripheral] in
-            peripheral?.blueticaCentral.peripheralHandler.modifyServices = $0
-            return Bluetica.default.peripheral
+        return { [weak central] in
+            central?.blueticaCentral.peripheralHandler.modifyServices = $0
+            return Bluetica.default.central
         }
     }
 
@@ -261,15 +261,15 @@ extension BlueticaCentral.Peripheral where Peripheral == Bluetica {
     /// - Returns: Self，便于链式调用
     @discardableResult
     public func updateRSSI(_ handler: @escaping BlueticaCentral.Handler.UpdateRSSI) -> Self {
-        peripheral.blueticaCentral.peripheralHandler.updateRSSI = handler
+        central.blueticaCentral.peripheralHandler.updateRSSI = handler
         return self
     }
 
     /// 链式设置 RSSI 更新回调
     public var updateRSSI: BlueticaCentral.Handler.UpdateRSSIResult {
-        return { [weak peripheral] in
-            peripheral?.blueticaCentral.peripheralHandler.updateRSSI = $0
-            return Bluetica.default.peripheral
+        return { [weak central] in
+            central?.blueticaCentral.peripheralHandler.updateRSSI = $0
+            return Bluetica.default.central
         }
     }
 
@@ -278,15 +278,15 @@ extension BlueticaCentral.Peripheral where Peripheral == Bluetica {
     /// - Returns: Self，便于链式调用
     @discardableResult
     public func readRSSI(_ handler: @escaping BlueticaCentral.Handler.ReadRSSI) -> Self {
-        peripheral.blueticaCentral.peripheralHandler.readRSSI = handler
+        central.blueticaCentral.peripheralHandler.readRSSI = handler
         return self
     }
 
     /// 链式设置读取 RSSI 回调
     public var readRSSI: BlueticaCentral.Handler.ReadRSSIResult {
-        return { [weak peripheral] in
-            peripheral?.blueticaCentral.peripheralHandler.readRSSI = $0
-            return Bluetica.default.peripheral
+        return { [weak central] in
+            central?.blueticaCentral.peripheralHandler.readRSSI = $0
+            return Bluetica.default.central
         }
     }
 
@@ -295,15 +295,15 @@ extension BlueticaCentral.Peripheral where Peripheral == Bluetica {
     /// - Returns: Self，便于链式调用
     @discardableResult
     public func discoverServices(_ handler: @escaping BlueticaCentral.Handler.DiscoverServices) -> Self {
-        peripheral.blueticaCentral.peripheralHandler.discoverServices = handler
+        central.blueticaCentral.peripheralHandler.discoverServices = handler
         return self
     }
 
     /// 链式设置服务发现回调
     public var discoverServices: BlueticaCentral.Handler.DiscoverServicesResult {
-        return { [weak peripheral] in
-            peripheral?.blueticaCentral.peripheralHandler.discoverServices = $0
-            return Bluetica.default.peripheral
+        return { [weak central] in
+            central?.blueticaCentral.peripheralHandler.discoverServices = $0
+            return Bluetica.default.central
         }
     }
 
@@ -312,15 +312,15 @@ extension BlueticaCentral.Peripheral where Peripheral == Bluetica {
     /// - Returns: Self，便于链式调用
     @discardableResult
     public func discoverIncludedServices(_ handler: @escaping BlueticaCentral.Handler.DiscoverIncludedServices) -> Self {
-        peripheral.blueticaCentral.peripheralHandler.discoverIncludedServices = handler
+        central.blueticaCentral.peripheralHandler.discoverIncludedServices = handler
         return self
     }
 
     /// 链式设置包含服务发现回调
     public var discoverIncludedServices: BlueticaCentral.Handler.DiscoverIncludedServicesResult {
-        return { [weak peripheral] in
-            peripheral?.blueticaCentral.peripheralHandler.discoverIncludedServices = $0
-            return Bluetica.default.peripheral
+        return { [weak central] in
+            central?.blueticaCentral.peripheralHandler.discoverIncludedServices = $0
+            return Bluetica.default.central
         }
     }
 
@@ -329,15 +329,15 @@ extension BlueticaCentral.Peripheral where Peripheral == Bluetica {
     /// - Returns: Self，便于链式调用
     @discardableResult
     public func discoverCharacteristics(_ handler: @escaping BlueticaCentral.Handler.DiscoverCharacteristics) -> Self {
-        peripheral.blueticaCentral.peripheralHandler.discoverCharacteristics = handler
+        central.blueticaCentral.peripheralHandler.discoverCharacteristics = handler
         return self
     }
 
     /// 链式设置特征值发现回调
     public var discoverCharacteristics: BlueticaCentral.Handler.DiscoverCharacteristicsResult {
-        return { [weak peripheral] in
-            peripheral?.blueticaCentral.peripheralHandler.discoverCharacteristics = $0
-            return Bluetica.default.peripheral
+        return { [weak central] in
+            central?.blueticaCentral.peripheralHandler.discoverCharacteristics = $0
+            return Bluetica.default.central
         }
     }
 
@@ -346,15 +346,15 @@ extension BlueticaCentral.Peripheral where Peripheral == Bluetica {
     /// - Returns: Self，便于链式调用
     @discardableResult
     public func updateValue(_ handler: @escaping BlueticaCentral.Handler.UpdateValue) -> Self {
-        peripheral.blueticaCentral.peripheralHandler.updateValue = handler
+        central.blueticaCentral.peripheralHandler.updateValue = handler
         return self
     }
 
     /// 链式设置特征值更新回调
     public var updateValue: BlueticaCentral.Handler.UpdateValueResult {
-        return { [weak peripheral] in
-            peripheral?.blueticaCentral.peripheralHandler.updateValue = $0
-            return Bluetica.default.peripheral
+        return { [weak central] in
+            central?.blueticaCentral.peripheralHandler.updateValue = $0
+            return Bluetica.default.central
         }
     }
 
@@ -363,15 +363,15 @@ extension BlueticaCentral.Peripheral where Peripheral == Bluetica {
     /// - Returns: Self，便于链式调用
     @discardableResult
     public func writeValue(_ handler: @escaping BlueticaCentral.Handler.WriteValue) -> Self {
-        peripheral.blueticaCentral.peripheralHandler.writeValue = handler
+        central.blueticaCentral.peripheralHandler.writeValue = handler
         return self
     }
 
     /// 链式设置写入特征值回调
     public var writeValue: BlueticaCentral.Handler.WriteValueResult {
-        return { [weak peripheral] in
-            peripheral?.blueticaCentral.peripheralHandler.writeValue = $0
-            return Bluetica.default.peripheral
+        return { [weak central] in
+            central?.blueticaCentral.peripheralHandler.writeValue = $0
+            return Bluetica.default.central
         }
     }
 
@@ -380,15 +380,15 @@ extension BlueticaCentral.Peripheral where Peripheral == Bluetica {
     /// - Returns: Self，便于链式调用
     @discardableResult
     public func updateNotificationState(_ handler: @escaping BlueticaCentral.Handler.UpdateNotificationState) -> Self {
-        peripheral.blueticaCentral.peripheralHandler.updateNotificationState = handler
+        central.blueticaCentral.peripheralHandler.updateNotificationState = handler
         return self
     }
 
     /// 链式设置通知状态更新回调
     public var updateNotificationState: BlueticaCentral.Handler.UpdateNotificationStateResult {
-        return { [weak peripheral] in
-            peripheral?.blueticaCentral.peripheralHandler.updateNotificationState = $0
-            return Bluetica.default.peripheral
+        return { [weak central] in
+            central?.blueticaCentral.peripheralHandler.updateNotificationState = $0
+            return Bluetica.default.central
         }
     }
 
@@ -397,15 +397,15 @@ extension BlueticaCentral.Peripheral where Peripheral == Bluetica {
     /// - Returns: Self，便于链式调用
     @discardableResult
     public func discoverDescriptors(_ handler: @escaping BlueticaCentral.Handler.DiscoverDescriptors) -> Self {
-        peripheral.blueticaCentral.peripheralHandler.discoverDescriptors = handler
+        central.blueticaCentral.peripheralHandler.discoverDescriptors = handler
         return self
     }
 
     /// 链式设置描述符发现回调
     public var discoverDescriptors: BlueticaCentral.Handler.DiscoverDescriptorsResult {
-        return { [weak peripheral] in
-            peripheral?.blueticaCentral.peripheralHandler.discoverDescriptors = $0
-            return Bluetica.default.peripheral
+        return { [weak central] in
+            central?.blueticaCentral.peripheralHandler.discoverDescriptors = $0
+            return Bluetica.default.central
         }
     }
 
@@ -414,15 +414,15 @@ extension BlueticaCentral.Peripheral where Peripheral == Bluetica {
     /// - Returns: Self，便于链式调用
     @discardableResult
     public func updateValueDescriptor(_ handler: @escaping BlueticaCentral.Handler.UpdateValueDescriptor) -> Self {
-        peripheral.blueticaCentral.peripheralHandler.updateValueDescriptor = handler
+        central.blueticaCentral.peripheralHandler.updateValueDescriptor = handler
         return self
     }
 
     /// 链式设置描述符值更新回调
     public var updateValueDescriptor: BlueticaCentral.Handler.UpdateValueDescriptorResult {
-        return { [weak peripheral] in
-            peripheral?.blueticaCentral.peripheralHandler.updateValueDescriptor = $0
-            return Bluetica.default.peripheral
+        return { [weak central] in
+            central?.blueticaCentral.peripheralHandler.updateValueDescriptor = $0
+            return Bluetica.default.central
         }
     }
 
@@ -431,15 +431,15 @@ extension BlueticaCentral.Peripheral where Peripheral == Bluetica {
     /// - Returns: Self，便于链式调用
     @discardableResult
     public func writeValueDescriptor(_ handler: @escaping BlueticaCentral.Handler.WriteValueDescriptor) -> Self {
-        peripheral.blueticaCentral.peripheralHandler.writeValueDescriptor = handler
+        central.blueticaCentral.peripheralHandler.writeValueDescriptor = handler
         return self
     }
 
     /// 链式设置写入描述符值回调
     public var writeValueDescriptor: BlueticaCentral.Handler.WriteValueDescriptorResult {
-        return { [weak peripheral] in
-            peripheral?.blueticaCentral.peripheralHandler.writeValueDescriptor = $0
-            return Bluetica.default.peripheral
+        return { [weak central] in
+            central?.blueticaCentral.peripheralHandler.writeValueDescriptor = $0
+            return Bluetica.default.central
         }
     }
 
@@ -448,15 +448,15 @@ extension BlueticaCentral.Peripheral where Peripheral == Bluetica {
     /// - Returns: Self，便于链式调用
     @discardableResult
     public func sendWriteWithoutResponse(_ handler: @escaping BlueticaCentral.Handler.SendWriteWithoutResponse) -> Self {
-        peripheral.blueticaCentral.peripheralHandler.sendWriteWithoutResponse = handler
+        central.blueticaCentral.peripheralHandler.sendWriteWithoutResponse = handler
         return self
     }
 
     /// 链式设置无响应写入回调
     public var sendWriteWithoutResponse: BlueticaCentral.Handler.SendWriteWithoutResponseResult {
-        return { [weak peripheral] in
-            peripheral?.blueticaCentral.peripheralHandler.sendWriteWithoutResponse = $0
-            return Bluetica.default.peripheral
+        return { [weak central] in
+            central?.blueticaCentral.peripheralHandler.sendWriteWithoutResponse = $0
+            return Bluetica.default.central
         }
     }
 
@@ -465,15 +465,15 @@ extension BlueticaCentral.Peripheral where Peripheral == Bluetica {
     /// - Returns: Self，便于链式调用
     @discardableResult
     public func openChannel(_ handler: @escaping BlueticaCentral.Handler.OpenChannel) -> Self {
-        peripheral.blueticaCentral.peripheralHandler.openChannel = handler
+        central.blueticaCentral.peripheralHandler.openChannel = handler
         return self
     }
 
     /// 链式设置打开 L2CAP 信道回调
     public var openChannel: BlueticaCentral.Handler.OpenChannelResult {
-        return { [weak peripheral] in
-            peripheral?.blueticaCentral.peripheralHandler.openChannel = $0
-            return Bluetica.default.peripheral
+        return { [weak central] in
+            central?.blueticaCentral.peripheralHandler.openChannel = $0
+            return Bluetica.default.central
         }
     }
 }

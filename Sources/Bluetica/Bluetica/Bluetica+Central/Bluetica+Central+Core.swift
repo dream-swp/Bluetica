@@ -7,16 +7,16 @@
 
 import CoreBluetooth
 
-/// BlueticaCentral.Manager 的扩展，提供配置管理器的能力
-extension BlueticaCentral.Manager where Manager == Bluetica {
+/// BlueticaCentral.Central 的扩展，提供配置管理器的能力
+extension BlueticaCentral.Central where Central == Bluetica {
 
     /// 配置 BlueticaCentral 的管理器参数
-    /// - Parameter config: 返回 ConfigManager 的闭包
+    /// - Parameter manager: 返回 ConfigManager 的闭包
     /// - Returns: 返回自身以便链式调用
-    public var config: (() -> BlueticaCentral.ConfigManager) -> Self {
-        return { [weak manager] in
-            manager?.blueticaCentral.managerConfig = $0()
-            return Bluetica.default.manager
+    public var manager: (() -> BlueticaCentral.ConfigManager) -> Self {
+        return { [weak central] in
+            central?.blueticaCentral.managerConfig = $0()
+            return Bluetica.default.central
         }
     }
 
@@ -25,16 +25,7 @@ extension BlueticaCentral.Manager where Manager == Bluetica {
 /// BlueticaCentral.Central 的扩展，提供中心设备的核心操作能力
 extension BlueticaCentral.Central where Central == Bluetica {
 
-    /// 当前中心是否已启用（蓝牙是否已打开）
-    public var isEnabled: Bool {
-        return status == .poweredOn
-    }
-
-    /// 当前中心的蓝牙状态
-    public var status: BlueticaStatus {
-        central.centralManager.state.convert
-    }
-
+    
     /// 配置中心参数
     /// - Parameter handler: 配置闭包，传入并返回 ConfigCentral
     /// - Returns: 返回自身以便链式调用
@@ -45,7 +36,7 @@ extension BlueticaCentral.Central where Central == Bluetica {
             return Bluetica.default.central
         }
     }
-
+    
     /// 配置中心参数（函数式调用）
     /// - Parameter handler: 配置闭包，传入并返回 ConfigCentral
     /// - Returns: 返回自身以便链式调用
@@ -55,6 +46,17 @@ extension BlueticaCentral.Central where Central == Bluetica {
         central.blueticaCentral.centralConfig = config
         return Bluetica.default.central
     }
+    
+    /// 当前中心是否已启用（蓝牙是否已打开）
+    public var isEnabled: Bool {
+        return status == .poweredOn
+    }
+
+    /// 当前中心的蓝牙状态
+    public var status: BlueticaStatus {
+        central.centralManager.state.convert
+    }
+    
 
     /// 当前是否正在扫描设备
     public var isScanning: Bool { central.blueticaCentral.isScanning }
@@ -153,27 +155,16 @@ extension BlueticaCentral.Central where Central == Bluetica {
 
 }
 
-/// BlueticaCentral.Peripheral 的扩展，提供外设相关的配置和属性
-extension BlueticaCentral.Peripheral where Peripheral == Bluetica {
+/// BlueticaCentral.Central 的扩展，提供外设相关的配置和属性
+extension BlueticaCentral.Central where Central == Bluetica {
 
     /// 配置外设参数
-    /// - Parameter config: 返回 ConfigPeripheral 的闭包
+    /// - Parameter peripheral: 返回 ConfigPeripheral 的闭包
     /// - Returns: 返回自身以便链式调用
-    public var config: (() -> BlueticaCentral.ConfigPeripheral) -> Self {
-        return { [weak peripheral] in
-            peripheral?.blueticaCentral.peripheralConfig = $0()
-            return Bluetica.default.peripheral
+    public var peripheral: (() -> BlueticaCentral.ConfigPeripheral) -> Self {
+        return { [weak central] in
+            central?.blueticaCentral.peripheralConfig = $0()
+            return Bluetica.default.central
         }
     }
-
-    /// 当前外设的服务列表
-    public var services: [CBService] {
-        peripheral.blueticaCentral.peripherals.services
-    }
-
-    /// 当前外设的特征值列表
-    public var characteristics: [CBCharacteristic] {
-        peripheral.blueticaCentral.peripherals.characteristics
-    }
-
 }

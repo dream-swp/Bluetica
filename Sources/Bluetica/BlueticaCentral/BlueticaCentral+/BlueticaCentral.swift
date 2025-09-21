@@ -22,9 +22,7 @@ final public class BlueticaCentral: NSObject, @unchecked Sendable {
     var peripherals = Peripherals()
 
     var isScanning = false
-
-    var connected = Connected()
-
+    
     var centralManager: (() -> (delegate: (any CBCentralManagerDelegate)?, isBackgroundMode: Bool?)) -> CBCentralManager {
         return { [weak self] in
             let result = $0()

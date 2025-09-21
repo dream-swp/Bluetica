@@ -7,6 +7,7 @@
 
 import Bluetica
 import Foundation
+import CoreBluetooth
 
 struct BluetoothDeviceInfoButtonsCommand: AppCommand {
 
@@ -23,10 +24,22 @@ struct BluetoothDeviceInfoButtonsCommand: AppCommand {
         case .subscribe:
             break
         case .refresh:
+//            let a = store.appState.bluetooth.device?.device.service
+//            let b = store.appState.bluetooth.device?.device.characteristics
+//            let c = store.appState.bluetooth.device?.device.serviceCharacteristics
+            print("12312")
             break
         case .characteristic:
             break
         }
     }
 
+}
+
+struct BluetoothDeviceAutoDiscoverServices: AppCommand {
+    func execute(_ store: AppStore, action: AppAction) {
+        
+    }
+
+    
 }

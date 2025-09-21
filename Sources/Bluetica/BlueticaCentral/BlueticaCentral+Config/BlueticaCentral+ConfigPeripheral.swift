@@ -17,10 +17,9 @@ extension BlueticaCentral {
         var services: [CBUUID]? = nil
         public var discoverServices: [CBUUID]? = nil
         public var discoverCharacteristics: [CBUUID]? = nil
-        public var isDiscoverServices = true
-        public var isDiscoverCharacteristics = true
+        public var isAutoDiscoverServices = true
+        public var isAutoDiscoverCharacteristics = true
 
-        
         private init() { }
     }
 }
@@ -44,6 +43,18 @@ extension BlueticaCentral.ConfigPeripheral {
         self.discoverCharacteristics = handler()
         return self
     }
+    
+    public func isAutoDiscoverServices(_ handler: () -> (Bool)) -> Self {
+        self.isAutoDiscoverServices = handler()
+        return self
+    }
+    
+    public func isAutoDiscoverCharacteristics(_ handler: () -> (Bool)) -> Self {
+        self.isAutoDiscoverCharacteristics = handler()
+        return self
+    }
+    
+    
 }
 
 // MARK: -

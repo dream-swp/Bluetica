@@ -16,6 +16,8 @@ struct BluetoothDeviceInfoButtons: View {
         EmptyView().toggle(device) { view, device in
             view.toggle(device.isConnected) {  _ in
                 buttons
+                infoView
+                    .padding(10)
             }
         }
 
@@ -48,12 +50,33 @@ extension BluetoothDeviceInfoButtons {
         ]
     }
 
+    private var infoView: some View {
+        HStack {
+            Image(systemName: "info.circle")
+                .foregroundColor(.blue)
+                .font(.caption)
+            
+            Text(servicesMessage)
+                .font(.caption)
+                .foregroundColor(.secondary)
+            
+            Spacer()
+        }
+        .padding(.horizontal)
+    }
+}
+
+extension BluetoothDeviceInfoButtons {
     private var deviceInfoButtons: [BluetoothButtonStyle] {
         appStore.appState.bluetoothViewModel.deviceInfoButtons
     }
     
     private var device: BluetoothDevice? {
         appStore.appState.bluetooth.device
+    }
+    
+    private var servicesMessage: String {
+        appStore.appState.bluetooth.servicesMessage
     }
 }
 

@@ -20,7 +20,6 @@ extension BlueticaCentral {
         @BlueticaDefaultValue(ConfigManager.defaultOptions)
         public var options: [String: Any]?
 
-
         private init() {}
 
     }
