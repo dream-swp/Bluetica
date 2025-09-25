@@ -18,6 +18,7 @@ struct BluetoothModel {
     var device: BluetoothDevice?
     
     var servicesMessage = ""
+    
 }
 
 extension BluetoothModel {

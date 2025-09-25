@@ -126,7 +126,9 @@ struct BluetoothConnectCommand: AppCommand {
                 store.appState.bluetooth.servicesMessage = "自动检索服务成功"
             }
             .discoverCharacteristics { manager, info in
-                print("123123")
+                if let services = info.device?.services {
+                    store.appState.bluetooth.device?.services = services.compactMap { BluetoothService(service: $0) }
+                }
             }
     }
 }

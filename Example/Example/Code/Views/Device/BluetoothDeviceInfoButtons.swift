@@ -53,12 +53,12 @@ extension BluetoothDeviceInfoButtons {
     private var infoView: some View {
         HStack {
             Image(systemName: "info.circle")
-                .foregroundColor(.blue)
+                .foregroundStyle(.blue)
                 .font(.caption)
             
             Text(servicesMessage)
                 .font(.caption)
-                .foregroundColor(.secondary)
+                .foregroundStyle(.secondary)
             
             Spacer()
         }

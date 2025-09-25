@@ -9,6 +9,7 @@ import Foundation
 import CoreBluetooth
 import Bluetica
 
+
 struct BluetoothDevice: Identifiable {
     
     var device: BlueticaCentral.Device
@@ -39,12 +40,24 @@ struct BluetoothDevice: Identifiable {
     
     var advertisement: [String: Any] { device.advertisement }
     
-    var services: [BlueticaCentral.Service] { device.services }
+    var services: [BluetoothService] = []
     
-    var characteristics: [BlueticaCentral.Characteristic] { device.characteristics }
+    var service: BluetoothService?
     
-    var serviceCharacteristics: [(service: BlueticaCentral.Service, characteristic: BlueticaCentral.Characteristic)] { device.serviceCharacteristics }
+}
+
+extension BluetoothDevice: CustomStringConvertible {
+    var description: String {
+        device.description
+    }
+}
+
+extension BluetoothDevice {
     
+    var servicesCount: Int {
+        device.serviceCharacteristics.count
+    }
+
 }
 
 extension BluetoothDevice: Equatable {

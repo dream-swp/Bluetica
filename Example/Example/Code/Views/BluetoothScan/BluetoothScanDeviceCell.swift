@@ -54,7 +54,7 @@ extension BluetoothScanDeviceCell {
 
             Text(device.identifierInfo)
                 .font(.caption)
-                .foregroundColor(.secondary)
+                .foregroundStyle(.secondary)
 
             serviceView
         }
@@ -63,11 +63,11 @@ extension BluetoothScanDeviceCell {
     private var serviceView: some View {
         Text("标准BLE设备")
             .font(.caption)
-            .foregroundColor(.secondary)
+            .foregroundStyle(.secondary)
             .toggle(device.isServices) { _ in
                 Text("主服务: \(device.serviceNames.prefix(2).joined(separator: ","))")
                     .font(.caption)
-                    .foregroundColor(.blue)
+                    .foregroundStyle(.blue)
                     .lineLimit(1)
             }
 
@@ -88,7 +88,7 @@ extension BluetoothScanDeviceCell {
                 .toggle(device.isServices) { _ in
                     Text("\(device.serviceUUIDs.count) 个服务")
                         .font(.caption2)
-                        .foregroundColor(.blue)
+                        .foregroundStyle(.blue)
                         .padding(.horizontal, 6)
                         .padding(.vertical, 2)
                         .background(.blue.opacity(0.1))

@@ -32,7 +32,7 @@ extension BluetoothScanDeviceList {
 
             Text("发现的设备 (\(bluetooth.devices.count))")
                 .font(.headline)
-                .foregroundColor(.primary)
+                .foregroundStyle(.primary)
 
             Spacer()
 
@@ -41,10 +41,10 @@ extension BluetoothScanDeviceList {
                     VStack(alignment: .trailing, spacing: 2) {
                         Text("点击卡片连接设备")
                             .font(.caption)
-                            .foregroundColor(.secondary)
+                            .foregroundStyle(.secondary)
                         Text("已按主服务过滤")
                             .font(.caption2)
-                            .foregroundColor(.blue)
+                            .foregroundStyle(.blue)
                     }
                 }
 

@@ -10,6 +10,8 @@ enum BluetoothDeviceInfoAction: ActionProtocol {
 
     case deviceInfoButtons(BluetoothDevice?, BluetoothDeviceInfoButtons.ButtonType)
     case autoDiscoverServices
+    
+    case deviceInfoService(BluetoothService)
 
     var command: AppCommand? {
         
@@ -18,6 +20,8 @@ enum BluetoothDeviceInfoAction: ActionProtocol {
             BluetoothDeviceInfoButtonsCommand(device: device, command: command)
         case .autoDiscoverServices:
             BluetoothDeviceAutoDiscoverServices()
+        case .deviceInfoService(let service):
+            BluetoothDeviceInfoServiceCommand(service: service)
         }
  
     }

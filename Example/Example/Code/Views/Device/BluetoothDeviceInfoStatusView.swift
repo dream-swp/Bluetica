@@ -102,7 +102,7 @@ extension BluetoothDeviceInfoStatusView {
                 VStack(alignment: .leading, spacing: 8) {
                     Text(result.title)
                         .font(.headline)
-                        .foregroundColor(.primary)
+                        .foregroundStyle(.primary)
                     LazyVGrid(columns: result.columns, spacing: 8) {
                         ForEach(result.datas) { data in
                             VStack(alignment: .leading, spacing: 2) {

@@ -14,44 +14,26 @@ struct BluetoothDeviceInfoServicesView: View {
     var body: some View {
         ScrollView {
             LazyVStack(spacing: 8) {
-                ForEach(services, id: \.id) { service in
-                    BluetoothDeviceServicesInfoView()
+                ForEach(services, id: \.service.uuid) { service in
+                    BluetoothDeviceServicesInfoView(service: service ,isSelect: self.service?.uuid == service.uuid) {
+                        appStore.dispatch(.deviceInfo(.deviceInfoService(service)))
+                    }
                 }
             }
         }
     }
 }
 
-struct BluetoothDeviceServicesInfoView: View {
 
-    var body: some View {
-        
-        Button {
-            
-        } label: {
-            HStack(spacing: 12) {
-                VStack {
-                    Image(systemName: "gear")
-                        .font(.title2)
-                        .foregroundStyle(true ? .white : .blue)
-                        .frame(width: 40, height: 40)
-                        .background(
-                            Circle()
-                                .fill(true ? Color.blue : Color.blue.opacity(0.1))
-                        )
-                }
-                
-            }
-            
-        }
-        .buttonStyle(.plain)
-    }
-}
 
 extension BluetoothDeviceInfoServicesView {
 
-    private var services: [BlueticaCentral.Service] {
+    private var services: [BluetoothService] {
         appStore.appState.bluetooth.device?.services ?? []
+    }
+
+    private var service: BluetoothService? {
+        appStore.appState.bluetooth.device?.service
     }
 
     private func serviceIcon(_ uuid: String) -> String {

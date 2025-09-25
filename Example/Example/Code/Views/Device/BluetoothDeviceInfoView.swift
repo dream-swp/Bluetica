@@ -23,6 +23,7 @@ struct BluetoothDeviceInfoView: View {
                     
                     BluetoothDeviceInfoServicesView()
                     
+                    BluetoothDeviceCharacteristicsInfoView()
                 }
                 
 
