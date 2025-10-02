@@ -5,7 +5,6 @@
 //  Created by Dream on 2025/9/5.
 //
 
-
 public enum PeripheralState: String, @unchecked Sendable, CaseIterable, RawRepresentable, CustomStringConvertible {
 
     case unknown, disconnected, connecting, connected, disconnecting
@@ -24,5 +23,5 @@ public enum PeripheralState: String, @unchecked Sendable, CaseIterable, RawRepre
             return "未知状态"
         }
     }
-
+    
 }

@@ -25,7 +25,6 @@ final public class Bluetica: NSObject, ObservableObject, @unchecked Sendable {
         self.centralManager = blueticaCentral.centralManager { (delegate: self, isBackgroundMode: self.verify.isBackgroundMode) }
     }
     
-    
     deinit {
         timer?.invalidate()
     }
@@ -43,7 +42,6 @@ extension Bluetica {
         case .none: break
         case .time(let timeInterval):
             timer = Timer.scheduledTimer(withTimeInterval: timeInterval, repeats: false) { [weak self] _ in
-                
                 self?.central.stop()
             }
         }
@@ -51,7 +49,7 @@ extension Bluetica {
     }
     
     
-    public func stopScan(_ isRemove: Bool = false) -> Self {
+    func stopScan(_ isRemove: Bool = false) -> Self {
         timer?.invalidate()
         timer = nil
         if blueticaCentral.isScanning == false  { return self }

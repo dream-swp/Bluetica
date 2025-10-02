@@ -11,8 +11,9 @@ struct AppState {
     
     let bluetica = Bluetica.default
     
-    var bluetooth = BluetoothModel()
+    var data = DataSignal()
     
-    var bluetoothViewModel = BluetoothViewModel()
-    
+    var appSignal = AppSignal()
+        
+    let appStyle = AppStyle()
 }

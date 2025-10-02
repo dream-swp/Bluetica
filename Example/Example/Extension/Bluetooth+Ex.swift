@@ -70,16 +70,12 @@ extension String {
 
 extension UUID {
     
-    var string: String {
-        self.uuidString
-    }
+    var string: String { self.uuidString }
 }
 
 extension CBUUID {
     
-    var string: String {
-        self.uuidString
-    }
+    var string: String { self.uuidString }
 }
 
 extension Bool {

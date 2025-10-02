@@ -8,7 +8,8 @@
 import CoreBluetooth
 import Foundation
 
-extension [String: Any]: BlueticaBridge {}
+extension [String: Any]: BlueticaBridge { }
+
 
 extension BA where BA == [String: Any] {
 

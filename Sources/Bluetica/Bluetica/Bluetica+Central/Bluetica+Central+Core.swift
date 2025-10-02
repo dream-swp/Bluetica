@@ -57,14 +57,11 @@ extension BlueticaCentral.Central where Central == Bluetica {
         central.centralManager.state.convert
     }
     
-
     /// 当前是否正在扫描设备
     public var isScanning: Bool { central.blueticaCentral.isScanning }
 
     /// 开始扫描设备
-    public var start: Void {
-        central.startScan()
-    }
+    public var start: Void { central.startScan() }
 
     /// 停止扫描设备
     public var stop: Bluetica { stop() }
@@ -73,9 +70,7 @@ extension BlueticaCentral.Central where Central == Bluetica {
     /// - Parameter isRemove: 是否移除设备，默认 false
     /// - Returns: 返回 Bluetica 实例
     @discardableResult
-    public func stop(_ isRemove: Bool = false) -> Bluetica {
-        return central.stopScan()
-    }
+    public func stop(_ isRemove: Bool = false) -> Bluetica { central.stopScan() }
 
     /// 连接指定的外设（闭包方式）
     /// - Parameter peripheral: 返回 CBPeripheral 的闭包

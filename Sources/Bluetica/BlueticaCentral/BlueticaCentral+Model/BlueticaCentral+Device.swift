@@ -156,6 +156,18 @@ extension BlueticaCentral.Service: Identifiable {
     public var cbCharacteristics: [CBCharacteristic] { service.characteristics ?? [] }
     
     public var characteristics: [BlueticaCentral.Characteristic] { cbCharacteristics.compactMap {  BlueticaCentral.Characteristic($0) } }
+    
+    public var serviceCharacteristics: [(service: BlueticaCentral.Service, characteristic: BlueticaCentral.Characteristic)] {
+        var result: [(service: BlueticaCentral.Service, characteristic: BlueticaCentral.Characteristic)] = []
+        peripheral?.services?.forEach { aService in
+            aService.characteristics?.forEach {
+                let service = BlueticaCentral.Service(aService)
+                let characteristic = BlueticaCentral.Characteristic($0)
+                result.append((service: service, characteristic: characteristic))
+            }
+        }
+        return result
+    }
 
 }
 
@@ -186,6 +198,8 @@ extension BlueticaCentral.Characteristic: Identifiable {
     public var descriptors: [CBDescriptor]? { characteristic.descriptors }
 
     public var isNotifying: Bool { characteristic.isNotifying }
+    
+    public var status: CharacteristicState { characteristic.properties.convert }
 }
 
 // MARK: -
