@@ -64,6 +64,17 @@ extension String {
         }
         
     }
+    
+    var serviceInfo: (image: String, title: String) {
+        switch self.uppercased() {
+        case "180F": ("battery.100percent.circle", "电池服务")
+        case "180A": ("info.circle", "设备信息")
+        case "1800": ("globe", "通用访问")
+        case "1801": ("gear.circle", "通用属性")
+        case "1804": ("repeat.circle", "传输发现")
+        default: ("arrow.trianglehead.2.clockwise.rotate.90.circle", self)
+        }
+    }
 }
 
 

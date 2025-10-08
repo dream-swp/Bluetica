@@ -46,20 +46,6 @@ struct DeviceInfoEntryView: View {
         .onAppear {
             appStore.dispatch(.deviceInfo(.updateCharacteristics))
         }
-//        .navigationDestination(isPresented: $appStore.appState.bluetoothSignal.characteristicsDisplayList) {
-//            
-//            NavigationLink(value: "1") {
-//                BluetoothCharacteristicsListView(characteristics: characteristics)
-//            }
-//            
-//        }
-//        .onChange(of: $appStore.appState.bluetoothSignal.characteristicsDisplayList.wrappedValue) { oldValue, newValue in
-//        
-////            NavigationLink(value: "123") {
-////                BluetoothCharacteristicsListView(characteristics: characteristics)
-////            }
-//        }
-        
         .sheet(isPresented: $appStore.appState.appSignal.isDisplayCharacteristicsList) {
             
             CharacteristicsEntryView(characteristics: characteristics)

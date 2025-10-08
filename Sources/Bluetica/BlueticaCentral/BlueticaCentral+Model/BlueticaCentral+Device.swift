@@ -200,6 +200,27 @@ extension BlueticaCentral.Characteristic: Identifiable {
     public var isNotifying: Bool { characteristic.isNotifying }
     
     public var status: CharacteristicState { characteristic.properties.convert }
+    
+    public var isBroadcast: Bool { properties.contains(.broadcast) }
+    
+    public var isRead: Bool { properties.contains(.read) }
+    
+    public var isWriteWithoutResponse: Bool { properties.contains(.writeWithoutResponse) }
+    
+    public var isWrite: Bool { properties.contains(.write) }
+    
+    public var isNotify: Bool { properties.contains(.notify) }
+    
+    public var isIndicate: Bool { properties.contains(.indicate) }
+    
+    public var isAuthenticatedSignedWrites: Bool { properties.contains(.authenticatedSignedWrites) }
+    
+    public var isExtendedProperties: Bool { properties.contains(.extendedProperties) }
+    
+    public var isNotifyEncryptionRequired: Bool { properties.contains(.notifyEncryptionRequired) }
+    
+    public var isIndicateEncryptionRequired: Bool { properties.contains(.indicateEncryptionRequired) }
+
 }
 
 // MARK: -

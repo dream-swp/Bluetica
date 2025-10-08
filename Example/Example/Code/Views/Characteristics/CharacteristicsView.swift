@@ -25,11 +25,15 @@ struct CharacteristicsView: View {
 
 //                searchView
                 
-                tagView
+                EmptyView()
+                    .toggle(DeviceType.isIphone) { _  in
+                    CharacteristicsGroupView(characteristics: characteristics)
+                }
+              
                 //
                 placeholderView
                     .toggle(characteristics.count > 0 && isSearchTextEmpty) { _ in
-                        CharacteristicsListView(characteristics: characteristics)
+                        CharacteristicsListView(datas: datas)
                     }
             }
             .padding(.horizontal, 16)
@@ -77,19 +81,7 @@ extension CharacteristicsView {
         .background(.bluetoothCharacteristicsSearch)
         .clipShape(RoundedRectangle(cornerRadius: 10))
     }
-
-    private var tagView: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 8) {
-                ForEach(datas, id: \.id) { item in
-//                    CharacteristicsBarView(text: item.rawValue, count: count(item), isSelected: tag == item) {
-                        //                        appStore.dispatch(.deviceInfo(.deviceCharacteristicsTage(item)))
-//                    }
-                }
-            }
-        }
-    }
-
+    
     private var placeholderView: some View {
 
         VStack(spacing: 16) {
@@ -117,16 +109,13 @@ extension CharacteristicsView {
 
 extension CharacteristicsView {
 
-    private var datas: [CharacteristicsSideBarItme] {
-        CharacteristicsSideBarItme.allCases
-    }
 
-    private var tag: CharacteristicsSideBarItme? {
-        appStore.appState.appSignal.characteristicsTag
+    private var barItme: CharacteristicsBarItme? {
+        appStore.appState.appSignal.characteristicsBarItme
     }
-
-    private func count(_ tag: CharacteristicsSideBarItme) -> Int {
-        characteristics.filter { tag.matches($0) }.count
+    
+    private var datas: [(service: String, characteristics: [Characteristics])] {
+        barItme?.datas { characteristics } ?? []
     }
 
     private var isSearchTextEmpty: Bool {

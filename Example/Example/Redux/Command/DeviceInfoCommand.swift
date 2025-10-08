@@ -57,7 +57,7 @@ struct DeviceInfoUpdateCharacteristicsCommand: AppCommand {
     func execute(_ store: AppStore, action: AppAction) {
         guard let device = store.appState.data.device, device.characteristics.count == 0, device.isConnected else { return  }
         store.appState.data.device?.characteristics = device.serviceCharacteristics.compactMap {
-            Characteristics(service: $0.service, characteristic: $0.characteristic)
+            Characteristics(service: Service($0.service), characteristic: $0.characteristic)
         }
     }
 }

@@ -11,18 +11,25 @@ import Foundation
 
 struct Service {
     let service: BlueticaCentral.Service
+
+    init(_ service: BlueticaCentral.Service) {
+        self.service = service
+    }
 }
 
 extension Service: Identifiable {
     var id: UUID { service.id }
-    var uuid: CBUUID { service.uuid }
-    var characteristic: [Characteristics] {
-        service.serviceCharacteristics.compactMap { Characteristics(service: $0.service, characteristic: $0.characteristic) }
-    }
-    var isPrimary: Bool { service.isPrimary }
+
 }
 
+extension Service {
 
+    var uuid: CBUUID { service.uuid }
 
+    var characteristic: [Characteristics] {
+        service.serviceCharacteristics.compactMap { Characteristics(service: Service($0.service), characteristic: $0.characteristic) }
+    }
 
-
+    var isPrimary: Bool { service.isPrimary }
+    
+}

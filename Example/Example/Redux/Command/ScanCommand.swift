@@ -102,9 +102,9 @@ struct ScanConnectDeviceCommand: AppCommand {
             }
             .discoverCharacteristics { manager, info in
                 if let device = info.device {
-                    store.appState.data.device?.services = device.services.compactMap { Service(service: $0) }
+                    store.appState.data.device?.services = device.services.compactMap { Service($0) }
                     store.appState.data.device?.characteristics = device.serviceCharacteristics.compactMap {
-                        Characteristics(service: $0.service, characteristic: $0.characteristic)
+                        Characteristics(service: Service($0.service), characteristic: $0.characteristic)
                     }
                 }
             }

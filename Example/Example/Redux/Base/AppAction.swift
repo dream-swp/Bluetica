@@ -12,10 +12,13 @@ enum AppAction: ActionProtocol {
     case scan(ScanAction)
     case deviceInfo(DeviceInfoAction)
 
+    case characteristics(CharacteristicsAction)
+
     var command: AppCommand? {
         switch self {
         case .scan(let value): value.command
         case .deviceInfo(let value): value.command
+        case .characteristics(let value): value.command
         }
     }
 }
@@ -30,4 +33,4 @@ extension AppAction {
     static var clearesDevice: AppAction { .scan(.clearesDevice) }
 }
 
-extension AppAction { }
+extension AppAction {}

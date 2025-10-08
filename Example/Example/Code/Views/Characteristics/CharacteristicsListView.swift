@@ -9,37 +9,45 @@ import SwiftUI
 
 // MARK: - CharacteristicsListView
 struct CharacteristicsListView: View {
+
+    @EnvironmentObject private var appStore: AppStore
     
-    var characteristics: [Characteristics]
+    var datas: [(service: String, characteristics: [Characteristics])]
+    
     var body: some View {
-        
+
         ScrollView {
             LazyVStack(alignment: .leading, spacing: 16) {
-                
-                ForEach(characteristics, id: \.id) { group in
+
+                ForEach(datas, id: \.service) { group in
                     VStack(alignment: .leading, spacing: 12) {
                         
-                        headView
-                        listView
+                        headView { group }
+                        
+                        listView { (group.characteristics, characteristic)  }
                     }
                 }
             }
         }
         .padding(.vertical, 16)
-       
     }
 }
 
 extension CharacteristicsListView {
 
-    private var headView: some View {
+    private func headView(_ handler: () -> (service: String, characteristics: [Characteristics])) -> some View {
+
         VStack(alignment: .leading, spacing: 12) {
+            let info = handler()
             HStack {
-                Text("12312312")
+                Image(systemName: info.service.serviceInfo.image)
+                    .font(.title3)
+                    .bold()
+                Text(info.service.serviceInfo.title)
                     .font(.headline)
                     .foregroundStyle(.primary)
                 Spacer()
-                Text("10")
+                Text("\(info.characteristics.count)")
                     .font(.caption)
                     .padding(.horizontal, 6)
                     .padding(.vertical, 2)
@@ -50,28 +58,34 @@ extension CharacteristicsListView {
             .padding(.horizontal, 16)
         }
     }
-    
-    private var listView: some View {
-        LazyVGrid(columns: [
-            GridItem(.flexible(), spacing: 8),
-            GridItem(.flexible(), spacing: 8)
-        ], spacing: 8) {
-            Text("123123")
-//            ForEach(group.characteristics) { characteristic in
-//                CharacteristicCard(
-//                    characteristic: characteristic,
-//                    isSelected: selectedCharacteristic?.id == characteristic.id
-//                ) {
-//                    // 选择特征并自动关闭窗口
-//                    selectedCharacteristic = characteristic
-//                    dismiss()
-//                }
-//            }
+
+    private func listView(_ handler: () -> (characteristics: [Characteristics], itme: Characteristics?)) -> some View {
+        
+        LazyVGrid(columns: columns, spacing: 8) {
+            let result = handler()
+            ForEach(result.characteristics) { characteristic in
+                CharacteristicsCell(characteristic: characteristic, isSelected: result.itme == characteristic ) {
+                    appStore.dispatch(.characteristics(.characteristicsSelect(characteristic)))
+                }
+            }
         }
         .padding(.horizontal, 16)
     }
-    
-//    private var cell(() -> sel): some View {
-//        
-//    }
+
 }
+
+extension CharacteristicsListView {
+    private var columns: [GridItem] {
+        [
+            GridItem(.flexible(), spacing: 8),
+            GridItem(.flexible(), spacing: 8),
+        ]
+    }
+    
+    private var characteristic: Characteristics? {
+        appStore.appState.data.characteristic
+    }
+    
+}
+
+
