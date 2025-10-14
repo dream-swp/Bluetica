@@ -31,6 +31,15 @@ extension View {
             self
         }
     }
+    
+    @ViewBuilder
+    func toggle<Value, Content: View>(_ isToggle: Bool?,  _ value: Value?, @ViewBuilder toggle: (Self, Value) -> Content) -> some View {
+        if let isToggle = isToggle, isToggle, let value = value {
+            toggle(self, value)
+        } else {
+            self
+        }
+    }
 
 }
 

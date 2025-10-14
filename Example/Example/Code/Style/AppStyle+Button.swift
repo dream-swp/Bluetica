@@ -17,6 +17,12 @@ struct AppButtonStyle {
     let connect: AppButtonStyleType = .connectStyle
     let deviceInfo: AppButtonStyleType = .infoStyle
     let deviceOperation: [AppButtonStyleType] = [.disconnectStyle, .subscribeStyle, .refreshFeatureStyle, .characteristicCountStyle]
+    
+    let characteristicReceiving: AppButtonStyleType = .characteristicReceivingStyle
+    
+    let characteristicNotify: AppButtonStyleType = .characteristicNotifyStyle
+    
+    
 }
 
 
@@ -70,6 +76,15 @@ extension AppButtonStyleType {
 
     static var characteristicCountStyle: Self {
         .init(imageName: .icon("info.circle"), title: .text("特征统计"), backgroundColor: .color(.purple), fontColor: .color(.white), font: .font(.callout), execute: .command("characteristic"))
+    }
+    
+    static var characteristicReceivingStyle: Self {
+        .init(imageName: .icon("repeat.circle.fill"), title: .text("读取数据"), backgroundColor: .color(.green), fontColor: .color(.white), font: .font(.callout))
+    }
+    
+    
+    static var characteristicNotifyStyle: Self {
+        .init(imageName: .icon("bell.circle.fill"), title: .text("订阅通知"), backgroundColor: .color(.green), fontColor: .color(.white), font: .font(.callout))
     }
 
 }

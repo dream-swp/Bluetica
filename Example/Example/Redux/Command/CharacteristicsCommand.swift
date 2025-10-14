@@ -25,7 +25,6 @@ struct CharacteristicsSelectCommand: AppCommand {
         store.appState.data.characteristic = characteristic
     }
 
-    
     init(_ characteristic: Characteristics) {
         self.characteristic = characteristic
     }

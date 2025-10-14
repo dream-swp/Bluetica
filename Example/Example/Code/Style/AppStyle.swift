@@ -10,7 +10,6 @@ import SwiftUI
 struct AppStyle {
     
     let scan = ScanStatusStyle()
-//    var scanStatus: ScanStatusStyleType = .scanStatus
     let button = AppButtonStyle()
 }
 

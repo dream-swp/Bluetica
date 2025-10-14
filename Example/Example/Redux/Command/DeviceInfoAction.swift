@@ -14,6 +14,10 @@ enum DeviceInfoAction: ActionProtocol {
     case displayCharacteristicsList(Bool)
 
     case updateCharacteristics
+    
+    case receivingData
+    
+    case sendData
 
     var command: AppCommand? {
 
@@ -26,6 +30,10 @@ enum DeviceInfoAction: ActionProtocol {
             DeviceInfoDisplayCharacteristicsCommand(isDisplayCharacteristicsList)
         case .updateCharacteristics:
             DeviceInfoUpdateCharacteristicsCommand()
+        case .receivingData:
+            DeviceInfoCharacteristicsReceivingData()
+        case .sendData:
+            DeviceInfoCharacteristicsSendData()
         }
 
     }

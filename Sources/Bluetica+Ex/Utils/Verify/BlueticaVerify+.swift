@@ -10,7 +10,7 @@ import Foundation
 
 
 // MARK: - BlueticaVerify: Bluetica
-extension BlueticaVerify where Verify: BlueticaBridge  {
+extension BlueticaVerify where Verify == Bluetica {
     
     var isBackgroundMode: Bool {
         return Bundle.main.utils.backgroundModes.count > 0
@@ -31,4 +31,32 @@ extension BlueticaVerify where Verify: BlueticaBridge  {
     }
     
 }
+
+
+extension BlueticaVerify where Verify == [String] {
+    
+    public var isDecimal: Bool {
+        self.verify.allSatisfy { $0.verify.isDecimal }
+    }
+    
+    public var isBinary: Bool {
+        self.verify.allSatisfy { $0.verify.isBinary }
+    }
+}
+
+extension BlueticaVerify where Verify == String {
+    
+    public var isDecimal: Bool {
+        let trimmed = self.verify.utils.trim
+        return UInt8(trimmed) != nil
+    }
+    
+    public var isBinary: Bool {
+        let trimmed = self.verify.utils.trim
+        return !trimmed.isEmpty && trimmed.allSatisfy { $0 == "0" || $0 == "1" }
+    }
+    
+    
+}
+
 // MARK: -

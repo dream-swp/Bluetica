@@ -5,6 +5,9 @@
 //  Created by Dream on 2025/8/16.
 //
 
+
+public protocol Verify {}
+
 // MARK: - BlueticaVerify
 public struct BlueticaVerify<Verify> {
 
@@ -19,9 +22,9 @@ public struct BlueticaVerify<Verify> {
 }
 
 // MARK: - BlueticaCompatible: BlueticaVerify
-extension BlueticaBridge {
+extension Verify {
 
-    /// Instance property
+//    / Instance property
     public var verify: BlueticaVerify<Self> {
         set {}
         get { BlueticaVerify(self) }
@@ -34,3 +37,9 @@ extension BlueticaBridge {
     }
 }
 // MARK: -
+
+extension Bluetica: Verify { }
+
+extension String: Verify { }
+
+extension [String]: Verify { }

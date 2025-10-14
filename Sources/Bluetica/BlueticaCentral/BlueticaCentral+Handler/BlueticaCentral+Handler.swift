@@ -188,7 +188,7 @@ extension BlueticaCentral.Handler {
     /// - Parameters:
     ///   - manager: 管理器实例
     ///   - info: Characteristic 元组
-    public typealias UpdateValue = (_ manager: PeripheralManager, _ info: Characteristic) -> Void
+    public typealias UpdateValue = (_ manager: PeripheralManager, _ data: Data? , _ info: Characteristic) -> Void
     /// 链式设置特征值更新回调
     public typealias UpdateValueResult = (@escaping UpdateValue) -> PeripheralResult
 

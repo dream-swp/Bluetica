@@ -25,7 +25,6 @@ extension BlueticaCentral.Central where Central == Bluetica {
 /// BlueticaCentral.Central 的扩展，提供中心设备的核心操作能力
 extension BlueticaCentral.Central where Central == Bluetica {
 
-    
     /// 配置中心参数
     /// - Parameter handler: 配置闭包，传入并返回 ConfigCentral
     /// - Returns: 返回自身以便链式调用
@@ -36,17 +35,17 @@ extension BlueticaCentral.Central where Central == Bluetica {
             return Bluetica.default.central
         }
     }
-    
+
     /// 配置中心参数（函数式调用）
     /// - Parameter handler: 配置闭包，传入并返回 ConfigCentral
     /// - Returns: 返回自身以便链式调用
     @discardableResult
-    public func config(_ handler : (BlueticaCentral.ConfigCentral) -> (BlueticaCentral.ConfigCentral)) -> Self {
-        let config = handler(central.blueticaCentral.centralConfig)
-        central.blueticaCentral.centralConfig = config
-        return Bluetica.default.central
+    public func config(_ handler: (BlueticaCentral.ConfigCentral) -> (BlueticaCentral.ConfigCentral)) -> Self {
+        //        let config = handler(central.blueticaCentral.centralConfig)
+        //        central.blueticaCentral.centralConfig = config
+        return config(handler)
     }
-    
+
     /// 当前中心是否已启用（蓝牙是否已打开）
     public var isEnabled: Bool {
         return status == .poweredOn
@@ -56,7 +55,7 @@ extension BlueticaCentral.Central where Central == Bluetica {
     public var status: BlueticaStatus {
         central.centralManager.state.convert
     }
-    
+
     /// 当前是否正在扫描设备
     public var isScanning: Bool { central.blueticaCentral.isScanning }
 
@@ -88,11 +87,11 @@ extension BlueticaCentral.Central where Central == Bluetica {
     /// - Returns: 返回自身以便链式调用
     @discardableResult
     public func connect(_ peripheral: CBPeripheral?) -> Self {
-        
+
         if let peripheral = peripheral, peripheral.state.convert != .connected {
             central.centralManager.connect(peripheral, options: central.blueticaCentral.centralConfig.connectOptions)
         }
-      
+
         return Bluetica.default.central
     }
 
@@ -115,7 +114,7 @@ extension BlueticaCentral.Central where Central == Bluetica {
         if let peripheral = peripheral, peripheral.state.convert == .connected {
             central.centralManager.cancelPeripheralConnection(peripheral)
         }
-        
+
         return Bluetica.default.central
     }
 
@@ -141,7 +140,7 @@ extension BlueticaCentral.Central where Central == Bluetica {
     public var isClearDevice: Bool {
         central.blueticaCentral.peripherals.discover.count <= 0
     }
-    
+
     public var clearDevice: Self {
         let _ = cancels
         let _ = central.blueticaCentral.peripherals.discover.removeAll()
@@ -162,4 +161,97 @@ extension BlueticaCentral.Central where Central == Bluetica {
             return Bluetica.default.central
         }
     }
+}
+
+extension BlueticaCentral.Central where Central == Bluetica {
+    
+    // MARK: - Read Value Data
+    @discardableResult
+    public func readData(_ characteristic: CBCharacteristic) -> Self {
+        guard let peripheral = central.blueticaCentral.peripherals.peripheral, peripheral.state == .connected else {
+            return Bluetica.default.central
+        }
+        peripheral.readValue(for: characteristic)
+        return Bluetica.default.central
+    }
+
+    public var readData: (() -> BlueticaCentral.Characteristic) -> Self {
+        return {
+            self.readData($0().characteristic)
+        }
+    }
+
+    @discardableResult
+    public func readData(_ handler: () -> BlueticaCentral.Characteristic) -> Self {
+        self.readData(handler)
+    }
+
+    // MARK: - Notify Value Data
+    @discardableResult
+    public func notifyData(_ enabled: Bool, for characteristic: CBCharacteristic) -> Self {
+        guard let peripheral = central.blueticaCentral.peripherals.peripheral, peripheral.state == .connected else {
+            return Bluetica.default.central
+        }
+        peripheral.setNotifyValue(enabled, for: characteristic)
+        return Bluetica.default.central
+    }
+
+    public var notifyData: (() -> (enabled: Bool, characteristic: BlueticaCentral.Characteristic)) -> Self {
+        return {
+            self.notifyData($0().enabled, for: $0().characteristic.characteristic)
+        }
+    }
+
+    @discardableResult
+    public func notifyData(_ handler: () -> (enabled: Bool, characteristic: BlueticaCentral.Characteristic)) -> Self {
+        self.notifyData(handler)
+    }
+
+    // MARK: - Write Value Data
+    public var writeDataResponse: (() -> (data: Data, characteristic: BlueticaCentral.Characteristic)) -> Self {
+        return {
+            self.writeValue($0().data, for: $0().characteristic.characteristic)
+        }
+    }
+
+    @discardableResult
+    public func writeDataResponse(_ handler: () -> (data: Data, characteristic: BlueticaCentral.Characteristic)) -> Self {
+        self.writeDataResponse(handler)
+    }
+
+    public var writeDataWithoutResponse: (() -> (data: Data, characteristic: BlueticaCentral.Characteristic)) -> Self {
+        return {
+            self.writeValue($0().data, for: $0().characteristic.characteristic, type: .withoutResponse)
+        }
+    }
+
+    @discardableResult
+    public func writeDataWithoutResponse(_ handler: () -> (data: Data, characteristic: BlueticaCentral.Characteristic)) -> Self {
+        self.writeDataWithoutResponse(handler)
+    }
+    
+    @discardableResult
+    public func writeValue(_ data: Data, for characteristic: CBCharacteristic, type: CBCharacteristicWriteType = .withResponse) -> Self {
+        guard let peripheral = central.blueticaCentral.peripherals.peripheral, peripheral.state == .connected else {
+            return self
+        }
+        peripheral.writeValue(data, for: characteristic, type: type)
+        return self
+    }
+    
+    @discardableResult
+    public func writeValue(_ data: Data, for descriptor: CBDescriptor) -> Self {
+        guard let peripheral = central.blueticaCentral.peripherals.peripheral, peripheral.state == .connected else {
+            return self
+        }
+        peripheral.writeValue(data, for: descriptor)
+        return self
+    }
+    
+    // TODO: - 
+//    open func discoverIncludedServices(_ includedServiceUUIDs: [CBUUID]?, for service: CBService)
+//    open func maximumWriteValueLength(for type: CBCharacteristicWriteType) -> Int
+//    open func discoverDescriptors(for characteristic: CBCharacteristic)
+//    open func openL2CAPChannel(_ PSM: CBL2CAPPSM)
+
 }

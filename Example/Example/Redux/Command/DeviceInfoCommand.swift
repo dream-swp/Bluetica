@@ -46,7 +46,7 @@ struct DeviceInfoDisplayCharacteristicsCommand: AppCommand {
     func execute(_ store: AppStore, action: AppAction) {
         store.appState.appSignal.isDisplayCharacteristicsList = isDisplayCharacteristicsList
     }
-    
+
     init(_ isDisplayCharacteristicsList: Bool) {
         self.isDisplayCharacteristicsList = isDisplayCharacteristicsList
     }
@@ -55,9 +55,62 @@ struct DeviceInfoDisplayCharacteristicsCommand: AppCommand {
 
 struct DeviceInfoUpdateCharacteristicsCommand: AppCommand {
     func execute(_ store: AppStore, action: AppAction) {
-        guard let device = store.appState.data.device, device.characteristics.count == 0, device.isConnected else { return  }
+        guard let device = store.appState.data.device, device.characteristics.count == 0, device.isConnected else { return }
         store.appState.data.device?.characteristics = device.serviceCharacteristics.compactMap {
             Characteristics(service: Service($0.service), characteristic: $0.characteristic)
+        }
+    }
+}
+
+struct DeviceInfoCharacteristicsReceivingData: AppCommand {
+
+    func execute(_ store: AppStore, action: AppAction) {
+
+        guard let characteristic = store.appState.data.characteristic else { return }
+        let _ = store.appState.bluetica.central
+            .readData { characteristic.characteristic }
+            .updateValue { _, data, _ in
+                if let data = data { store.appState.data.characteristic?.data = data }
+            }
+
+    }
+
+}
+
+
+struct DeviceInfoCharacteristicsSendData: AppCommand {
+    
+    func execute(_ store: AppStore, action: AppAction) {
+        guard let characteristic = store.appState.data.characteristic?.characteristic else { return  }
+        
+        var data = store.appState.appSignal.characteristicSendText.convert.data
+        
+        switch store.appState.appSignal.characteristicSelectedWriteDataItem {
+        case .string:
+            data = store.appState.appSignal.characteristicSendText.convert.data
+        case .hex:
+            data = store.appState.appSignal.characteristicSendText.convert.hex
+        case .decimal:
+            data = store.appState.appSignal.characteristicSendText.convert.decimal
+        case .binary:
+            data = store.appState.appSignal.characteristicSendText.convert.binary
+        case .base64:
+            data = store.appState.appSignal.characteristicSendText.convert.base64
+        }
+        
+        print(data.convert.string)
+        print(data.convert.hex)
+        print(data.convert.decimal)
+        print(data.convert.ascii)
+        print(data.convert.binary)
+        print(data.convert.base64)
+        
+        let parameter = (data, characteristic)
+        switch store.appState.appSignal.characteristicSelectedWriteModeItem {
+        case .writeResponse:
+            let _ =  store.appState.bluetica.central.writeDataResponse { parameter }
+        case .writeWithoutResponse:
+            let _ =  store.appState.bluetica.central.writeDataWithoutResponse { parameter }
         }
     }
 }

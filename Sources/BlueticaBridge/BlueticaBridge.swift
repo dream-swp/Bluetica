@@ -21,8 +21,7 @@ extension BlueticaCentral.Central: BlueticaBridge { }
 /// Bluetica 外设桥接
 extension BlueticaPeripheral: BlueticaBridge { }
 
-/// Bundle 桥接（资源扩展）
-extension Bundle: BlueticaBridge {}
+
 
 
 

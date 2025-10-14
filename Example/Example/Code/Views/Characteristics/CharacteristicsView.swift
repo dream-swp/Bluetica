@@ -62,15 +62,13 @@ struct CharacteristicsView: View {
     }
 }
 
-
-
 extension CharacteristicsView {
 
     private var searchView: some View {
 
         HStack {
             Image(systemName: "magnifyingglass")
-                .foregroundColor(.secondary)
+                .foregroundStyle(.secondary)
             TextField("搜索特征...", text: characteristicsSearchText)
                 .textFieldStyle(.plain)
                 .autocorrectionDisabled(false)

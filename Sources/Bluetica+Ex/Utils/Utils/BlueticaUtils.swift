@@ -5,6 +5,9 @@
 //  Created by Dream on 2025/8/16.
 //
 
+
+protocol Utils { }
+
 // MARK: - BlueticaUtils
 /// Isolation
 public struct BlueticaUtils<Utils> {
@@ -20,7 +23,7 @@ public struct BlueticaUtils<Utils> {
 }
 
 // MARK: - BlueticaCompatible: BlueticaUtils
-extension BlueticaBridge {
+extension Utils {
 
     /// Instance property
     public var utils: BlueticaUtils<Self> {

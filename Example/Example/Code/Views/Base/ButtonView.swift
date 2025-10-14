@@ -17,7 +17,9 @@ struct ButtonView: View {
 
         Button(action: action) {
             HStack {
-                Image(systemName: style.imageName.icon)
+                EmptyView().toggle(style.imageName.icon.isEmpty == false) { _ in
+                    Image(systemName: style.imageName.icon)
+                }
                 Text(style.title.text)
             }
             .frame(maxWidth: .infinity)

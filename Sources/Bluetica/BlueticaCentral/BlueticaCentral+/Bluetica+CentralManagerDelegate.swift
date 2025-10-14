@@ -146,8 +146,9 @@ extension Bluetica: CBPeripheralDelegate {
 
     /// 发现包含服务时回调
     public func peripheral(_ peripheral: CBPeripheral, didDiscoverIncludedServicesFor service: CBService, error: Error?) {
+        
         if let error = error {
-            print("didDiscoverCharacteristicsFor >>> error = \(error.localizedDescription)")
+            print("didDiscoverIncludedServicesFor >>> error = \(error.localizedDescription)")
             blueticaCentral.peripheralHandler.discoverIncludedServices?(self, (device: nil, peripheral: peripheral, service: service, error: error))
             return
         }
@@ -169,12 +170,23 @@ extension Bluetica: CBPeripheralDelegate {
 
     /// 特征值更新时回调
     public func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
-        blueticaCentral.peripheralHandler.updateValue?(self, (peripheral: peripheral, characteristic: characteristic, error: error))
+        
+        
+        let info = (peripheral: peripheral, characteristic: characteristic, error: error)
+        
+        guard let data = characteristic.value, error == nil else {
+            blueticaCentral.peripheralHandler.updateValue?(self, nil, info)
+            return
+        }
+        
+        blueticaCentral.peripheralHandler.updateValue?(self, data, info)
     }
 
     /// 写入特征值后回调
     public func peripheral(_ peripheral: CBPeripheral, didWriteValueFor characteristic: CBCharacteristic, error: Error?) {
+        
         blueticaCentral.peripheralHandler.writeValue?(self, (peripheral: peripheral, characteristic: characteristic, error: error))
+        
     }
 
     /// 通知状态更新时回调

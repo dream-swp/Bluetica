@@ -18,4 +18,10 @@ struct AppSignal {
     
     var characteristicsSearchText: String = ""
     
+    var characteristicSendText: String = ""
+    
+    var characteristicSelectedWriteModeItem: WriteModeItem = .writeResponse
+    
+    var characteristicSelectedWriteDataItem: WriteDataItem = .string
+    
 }

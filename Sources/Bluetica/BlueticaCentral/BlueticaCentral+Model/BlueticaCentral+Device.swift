@@ -41,7 +41,6 @@ extension BlueticaCentral.Device: Equatable {
 
 extension BlueticaCentral.Device: CustomStringConvertible {
     
-    
     public var description: String {
         guard let peripheral = peripheral else {
             return "没有连接的设备"

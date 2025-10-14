@@ -12,13 +12,14 @@ import Foundation
 struct Characteristics {
 
     let service: Service
-    
+
     let characteristic: BlueticaCentral.Characteristic
+
+    var data = Data()
 
 }
 
 extension Characteristics: Identifiable {
-
 
     var id: CBUUID { characteristic.uuid }
 
@@ -28,26 +29,39 @@ extension Characteristics: Identifiable {
 
     var properties: CBCharacteristicProperties { characteristic.properties }
 
-    public var isBroadcast: Bool { characteristic.isBroadcast }
+    var isBroadcast: Bool { characteristic.isBroadcast }
 
-    public var isRead: Bool { characteristic.isRead }
+    var isRead: Bool { characteristic.isRead }
 
-    public var isWriteWithoutResponse: Bool { characteristic.isWriteWithoutResponse }
+    var isWriteWithoutResponse: Bool { characteristic.isWriteWithoutResponse }
 
-    public var isWrite: Bool { characteristic.isWrite }
+    var isWrite: Bool { characteristic.isWrite }
 
-    public var isNotify: Bool { characteristic.isNotify }
+    var isNotify: Bool { characteristic.isNotify }
 
-    public var isIndicate: Bool { characteristic.isIndicate }
+    var isIndicate: Bool { characteristic.isIndicate }
 
-    public var isAuthenticatedSignedWrites: Bool { characteristic.isAuthenticatedSignedWrites }
+    var isAuthenticatedSignedWrites: Bool { characteristic.isAuthenticatedSignedWrites }
 
-    public var isExtendedProperties: Bool { characteristic.isExtendedProperties }
+    var isExtendedProperties: Bool { characteristic.isExtendedProperties }
 
-    public var isNotifyEncryptionRequired: Bool { characteristic.isNotifyEncryptionRequired }
+    var isNotifyEncryptionRequired: Bool { characteristic.isNotifyEncryptionRequired }
 
-    public var isIndicateEncryptionRequired: Bool { characteristic.isIndicateEncryptionRequired }
+    var isIndicateEncryptionRequired: Bool { characteristic.isIndicateEncryptionRequired }
 
+    var decimal: String { data.convert.decimal }
+
+    var string: String { data.convert.string }
+
+    var hexBig: String { data.convert.hex }
+    
+    var hexSmall: String { data.convert.hex { (false, " ")} }
+
+    var binary: String { data.convert.binary }
+
+    var ascii: String { data.convert.ascii }
+
+    var base64: String { data.convert.base64 }
 }
 
 extension Characteristics {
@@ -64,8 +78,17 @@ extension Characteristics {
         default: uuid
         }
     }
-    
-   
+
+    var propertiesString: String {
+        var props: [String] = []
+        if isRead { props.append("读") }
+        if isWrite { props.append("写") }
+        if isWriteWithoutResponse { props.append("写(无响应)") }
+        if isNotify { props.append("通知") }
+        if isIndicate { props.append("指示") }
+        return props.joined(separator: ", ")
+    }
+
 }
 
 extension Characteristics: Equatable {
