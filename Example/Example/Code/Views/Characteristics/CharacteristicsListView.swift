@@ -12,7 +12,7 @@ struct CharacteristicsListView: View {
 
     @EnvironmentObject private var appStore: AppStore
     
-    var datas: [(service: String, characteristics: [Characteristics])]
+    var datas: [(service: String, characteristics: [Characteristic])]
     
     var body: some View {
 
@@ -35,7 +35,7 @@ struct CharacteristicsListView: View {
 
 extension CharacteristicsListView {
 
-    private func headView(_ handler: () -> (service: String, characteristics: [Characteristics])) -> some View {
+    private func headView(_ handler: () -> (service: String, characteristics: [Characteristic])) -> some View {
 
         VStack(alignment: .leading, spacing: 12) {
             let info = handler()
@@ -60,7 +60,7 @@ extension CharacteristicsListView {
         }
     }
 
-    private func listView(_ handler: () -> (characteristics: [Characteristics], itme: Characteristics?)) -> some View {
+    private func listView(_ handler: () -> (characteristics: [Characteristic], itme: Characteristic?)) -> some View {
         
         LazyVGrid(columns: columns, spacing: 8) {
             let result = handler()
@@ -83,7 +83,7 @@ extension CharacteristicsListView {
         ]
     }
     
-    private var characteristic: Characteristics? {
+    private var characteristic: Characteristic? {
         appStore.appState.data.characteristic
     }
     

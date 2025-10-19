@@ -26,9 +26,9 @@ struct DataSignal {
     
     var service: Service?
     
-    var characteristic: Characteristics?
+    var characteristic: Characteristic?
     
-    var characteristics: [(service: String, characteristics: [Characteristics])] = []
+    var characteristics: [(service: String, characteristics: [Characteristic])] = []
 }
 
 extension DataSignal {

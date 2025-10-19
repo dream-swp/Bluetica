@@ -10,7 +10,7 @@ import CoreBluetooth
 
 struct CharacteristicsCell: View {
 
-    let characteristic: Characteristics
+    let characteristic: Characteristic
     let isSelected: Bool
     let action: () -> Void
     var body: some View {

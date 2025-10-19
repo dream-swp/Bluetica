@@ -17,14 +17,36 @@ enum BlueticaConvertData {
 
     var value: String {
         switch self {
-        case .data(let value, _): value
-        case .hex(let value): value
-        case .decimal(let value): value
-        case .binary(let value): value
-        case .base64(let value, _): value
+        case .data(let value, _),
+            .hex(let value),
+            .decimal(let value),
+            .binary(let value),
+            .base64(let value, _):
+            value
         }
     }
 
+    var data: Data {
+        switch self {
+        case .data(_, let encoding): data(filter.value, encoding: encoding)
+        case .hex: hex(self.filter.value)
+        case .decimal: Data(decimals)
+        case .binary: Data(binarys)
+        case .base64(_, let options): base64(filter.value, options: options)
+        }
+    }
+
+    var original: [String] {
+        switch self {
+        case .decimal, .binary:
+            filter.value.components(separatedBy: self.separators).filter { !$0.isEmpty }
+        default: [filter.value]
+        }
+    }
+
+}
+
+extension BlueticaConvertData {
     var verify: CharacterSet {
         switch self {
         case .hex:
@@ -58,48 +80,29 @@ enum BlueticaConvertData {
 
     var filter: Self {
         switch self {
-        case .hex(var value) :
-            self.replacing.compactMap {
+        case .hex(var value):
+             _ = self.replacing.compactMap {
                 value = value.replacingOccurrences(of: $0, with: "")
             }
             return .hex(value)
         case .decimal(var value):
-            self.replacing.compactMap {
+            let _ = self.replacing.compactMap {
                 value = value.replacingOccurrences(of: $0, with: "")
             }
             return .decimal(value)
         case .base64(var value, let options):
-            self.replacing.compactMap {
+            _ = self.replacing.compactMap {
                 value = value.replacingOccurrences(of: $0, with: "")
             }
             return .base64(value, options)
         default: return self
         }
     }
-
-    var data: Data {
-        switch self {
-        case .data(let value, let encoding): data(filter.value, encoding: encoding)
-        case .hex: hex(self.filter.value)
-        case .decimal: Data(decimals)
-        case .binary: Data(binarys)
-        case .base64(let value, let options): base64(filter.value, options: options)
-        }
-    }
-
-    var original: [String] {
-        switch self {
-        case .decimal, .binary:
-            filter.value.components(separatedBy: self.separators).filter { !$0.isEmpty }
-        default: [filter.value]
-        }
-    }
-
 }
 
 extension BlueticaConvertData {
 
-    func data(_ value: String, encoding: String.Encoding)  -> Data {
+    func data(_ value: String, encoding: String.Encoding) -> Data {
         value.data(using: encoding) ?? Data()
     }
 

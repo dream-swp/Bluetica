@@ -40,7 +40,7 @@ struct DeviceInfoSelectedServiceCommand: AppCommand {
     }
 }
 
-struct DeviceInfoDisplayCharacteristicsCommand: AppCommand {
+struct DeviceInfoDisplayCharacteristicCommand: AppCommand {
 
     let isDisplayCharacteristicsList: Bool
     func execute(_ store: AppStore, action: AppAction) {
@@ -53,38 +53,44 @@ struct DeviceInfoDisplayCharacteristicsCommand: AppCommand {
 
 }
 
-struct DeviceInfoUpdateCharacteristicsCommand: AppCommand {
+struct DeviceInfoUpdateCharacteristicCommand: AppCommand {
     func execute(_ store: AppStore, action: AppAction) {
         guard let device = store.appState.data.device, device.characteristics.count == 0, device.isConnected else { return }
         store.appState.data.device?.characteristics = device.serviceCharacteristics.compactMap {
-            Characteristics(service: Service($0.service), characteristic: $0.characteristic)
+            Characteristic(service: Service($0.service), characteristic: $0.characteristic)
         }
     }
 }
 
-struct DeviceInfoCharacteristicsReceivingData: AppCommand {
+struct DeviceInfoCharacteristicReadData: AppCommand {
 
     func execute(_ store: AppStore, action: AppAction) {
 
         guard let characteristic = store.appState.data.characteristic else { return }
         let _ = store.appState.bluetica.central
             .readData { characteristic.characteristic }
-            .updateValue { _, data, _ in
-                if let data = data { store.appState.data.characteristic?.data = data }
-            }
 
+        store.dispatch(.deviceInfo(.updateData))
     }
 
 }
 
-
-struct DeviceInfoCharacteristicsSendData: AppCommand {
-    
+struct DeviceInfoCharacteristicUpdateData: AppCommand {
     func execute(_ store: AppStore, action: AppAction) {
-        guard let characteristic = store.appState.data.characteristic?.characteristic else { return  }
-        
+        let _ = store.appState.bluetica.central
+            .updateValue { _, data, _ in
+                if let data = data { store.appState.data.characteristic?.read.data = data }
+            }
+    }
+}
+
+struct DeviceInfoCharacteristicSendData: AppCommand {
+
+    func execute(_ store: AppStore, action: AppAction) {
+        guard let characteristic = store.appState.data.characteristic?.characteristic else { return }
+
         var data = store.appState.appSignal.characteristicSendText.convert.data
-        
+
         switch store.appState.appSignal.characteristicSelectedWriteDataItem {
         case .string:
             data = store.appState.appSignal.characteristicSendText.convert.data
@@ -97,20 +103,53 @@ struct DeviceInfoCharacteristicsSendData: AppCommand {
         case .base64:
             data = store.appState.appSignal.characteristicSendText.convert.base64
         }
-        
-        print(data.convert.string)
-        print(data.convert.hex)
-        print(data.convert.decimal)
-        print(data.convert.ascii)
-        print(data.convert.binary)
-        print(data.convert.base64)
-        
+
+        store.appState.data.characteristic?.write.data = data
+
         let parameter = (data, characteristic)
         switch store.appState.appSignal.characteristicSelectedWriteModeItem {
         case .writeResponse:
-            let _ =  store.appState.bluetica.central.writeDataResponse { parameter }
+            let _ = store.appState.bluetica.central.writeDataResponse { parameter }
         case .writeWithoutResponse:
-            let _ =  store.appState.bluetica.central.writeDataWithoutResponse { parameter }
+            let _ = store.appState.bluetica.central.writeDataWithoutResponse { parameter }
         }
     }
+}
+
+struct DeviceInfoCharacteristicNotify: AppCommand {
+
+    func execute(_ store: AppStore, action: AppAction) {
+        guard let characteristic = store.appState.data.characteristic else { return }
+        store.dispatch(.deviceInfo(characteristic.isNotifying ? .unsubscribeNotify : .subscribeNotify))
+    }
+
+}
+
+struct DeviceInfoCharacteristicSubscribeNotify: AppCommand {
+
+    func execute(_ store: AppStore, action: AppAction) {
+        guard let characteristic = store.appState.data.characteristic else { return }
+        let _ = store.appState.bluetica.central
+            .subscribeNotify {
+                characteristic.characteristic
+            }
+        store.dispatch(.deviceInfo(.updateData))
+    }
+}
+
+struct DeviceInfoCharacteristicUnsubscribeNotify: AppCommand {
+    func execute(_ store: AppStore, action: AppAction) {
+        guard let characteristic = store.appState.data.characteristic else { return }
+        let _ = store.appState.bluetica.central
+            .unSubscribeNotify {
+                characteristic.characteristic
+            }
+            .updateNotificationState { manager, info in
+                if let update = info.update {
+                    store.appState.data.characteristic? = Characteristic(service: characteristic.service, characteristic: update)
+                }
+            }
+
+    }
+
 }

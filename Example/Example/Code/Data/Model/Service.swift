@@ -26,8 +26,8 @@ extension Service {
 
     var uuid: CBUUID { service.uuid }
 
-    var characteristic: [Characteristics] {
-        service.serviceCharacteristics.compactMap { Characteristics(service: Service($0.service), characteristic: $0.characteristic) }
+    var characteristic: [Characteristic] {
+        service.serviceCharacteristics.compactMap { Characteristic(service: Service($0.service), characteristic: $0.characteristic) }
     }
 
     var isPrimary: Bool { service.isPrimary }

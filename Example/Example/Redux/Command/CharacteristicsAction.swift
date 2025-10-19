@@ -7,9 +7,9 @@
 
 enum CharacteristicsAction: ActionProtocol {
 
-    case characteristicsSelectBarItme(CharacteristicsBarItme)
+    case characteristicsSelectBarItme(CharacteristicBarItme)
 
-    case characteristicsSelect(Characteristics)
+    case characteristicsSelect(Characteristic)
     
     case characteristicsDefaultData
 

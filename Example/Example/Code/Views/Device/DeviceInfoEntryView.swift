@@ -92,11 +92,11 @@ extension DeviceInfoEntryView {
         $appStore.appState.data.device
     }
     
-    private var characteristic: Binding<Characteristics?> {
+    private var characteristic: Binding<Characteristic?> {
         $appStore.appState.data.characteristic
     }
     
-    private var characteristics: [Characteristics] {
+    private var characteristics: [Characteristic] {
         appStore.appState.data.device?.characteristics ?? []
     }
     

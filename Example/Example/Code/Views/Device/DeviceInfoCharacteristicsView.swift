@@ -74,7 +74,7 @@ extension DeviceInfoCharacteristicsView {
         device?.description
     }
     
-    private var characteristics: [Characteristics]  {
+    private var characteristics: [Characteristic]  {
         device?.characteristics ?? []
     }
 }

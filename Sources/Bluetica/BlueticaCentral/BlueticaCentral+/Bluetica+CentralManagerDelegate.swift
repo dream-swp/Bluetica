@@ -147,37 +147,47 @@ extension Bluetica: CBPeripheralDelegate {
     /// 发现包含服务时回调
     public func peripheral(_ peripheral: CBPeripheral, didDiscoverIncludedServicesFor service: CBService, error: Error?) {
         
+        let update: BlueticaCentral.Service? = nil
+        var device: BlueticaCentral.Device?  = nil
+        var info = (device: device, update: update, peripheral: peripheral, service: service, error: error)
         if let error = error {
             print("didDiscoverIncludedServicesFor >>> error = \(error.localizedDescription)")
-            blueticaCentral.peripheralHandler.discoverIncludedServices?(self, (device: nil, peripheral: peripheral, service: service, error: error))
+            blueticaCentral.peripheralHandler.discoverIncludedServices?(self, info)
             return
         }
-        let device = blueticaCentral.peripherals.updateConnected { peripheral }.device
-        blueticaCentral.peripheralHandler.discoverIncludedServices?(self, (device: device, peripheral: peripheral, service: service, error: error))
+        device = blueticaCentral.peripherals.updateConnected { peripheral }.device
+        info = (device: device, update: blueticaCentral.peripherals.service, peripheral: peripheral, service: service, error: error)
+        blueticaCentral.peripheralHandler.discoverIncludedServices?(self, info)
     }
 
     /// 发现特征值时回调
     public func peripheral(_ peripheral: CBPeripheral, didDiscoverCharacteristicsFor service: CBService, error: Error?) {
 
+        let update: BlueticaCentral.Service? = nil
+        var device: BlueticaCentral.Device?  = nil
+        var info = (device: device, update: update, peripheral: peripheral, service: service, error: error)
         if let error = error {
             print("didDiscoverCharacteristicsFor >>> error = \(error.localizedDescription)")
-            blueticaCentral.peripheralHandler.discoverCharacteristics?(self, (device: nil, peripheral: peripheral, service: service, error: error))
+            blueticaCentral.peripheralHandler.discoverCharacteristics?(self, info)
             return
         }
-        let device = blueticaCentral.peripherals.updateConnected { peripheral }.device
-        blueticaCentral.peripheralHandler.discoverCharacteristics?(self, (device: device, peripheral: peripheral, service: service, error: error))
+        device = blueticaCentral.peripherals.updateConnected { (peripheral, service) }.device
+        info = (device: device, update: blueticaCentral.peripherals.service, peripheral: peripheral, service: service, error: error)
+        blueticaCentral.peripheralHandler.discoverCharacteristics?(self, info)
     }
 
     /// 特征值更新时回调
     public func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
         
-        
-        let info = (peripheral: peripheral, characteristic: characteristic, error: error)
+        let update: BlueticaCentral.Characteristic? = nil
+        var info = (update: update, peripheral: peripheral, characteristic: characteristic, error: error)
         
         guard let data = characteristic.value, error == nil else {
             blueticaCentral.peripheralHandler.updateValue?(self, nil, info)
             return
         }
+        _ = blueticaCentral.peripherals.updateConnected { (peripheral, characteristic) }.device
+        info = (update: blueticaCentral.peripherals.characteristic, peripheral: peripheral, characteristic: characteristic, error: error)
         
         blueticaCentral.peripheralHandler.updateValue?(self, data, info)
     }
@@ -185,38 +195,53 @@ extension Bluetica: CBPeripheralDelegate {
     /// 写入特征值后回调
     public func peripheral(_ peripheral: CBPeripheral, didWriteValueFor characteristic: CBCharacteristic, error: Error?) {
         
-        blueticaCentral.peripheralHandler.writeValue?(self, (peripheral: peripheral, characteristic: characteristic, error: error))
+        _ = blueticaCentral.peripherals.updateConnected { (peripheral, characteristic) }.device
+        let info = (update: blueticaCentral.peripherals.characteristic, peripheral: peripheral, characteristic: characteristic, error: error)
+        blueticaCentral.peripheralHandler.writeValue?(self, info)
         
     }
 
     /// 通知状态更新时回调
     public func peripheral(_ peripheral: CBPeripheral, didUpdateNotificationStateFor characteristic: CBCharacteristic, error: Error?) {
-        blueticaCentral.peripheralHandler.updateNotificationState?(self, (peripheral: peripheral, characteristic: characteristic, error: error))
+        
+        _ = blueticaCentral.peripherals.updateConnected { (peripheral, characteristic) }.device
+        let info = (update: blueticaCentral.peripherals.characteristic, peripheral: peripheral, characteristic: characteristic, error: error)
+        blueticaCentral.peripheralHandler.updateNotificationState?(self, info)
     }
 
     /// 发现描述符时回调
     public func peripheral(_ peripheral: CBPeripheral, didDiscoverDescriptorsFor characteristic: CBCharacteristic, error: Error?) {
-        blueticaCentral.peripheralHandler.discoverDescriptors?(self, (peripheral: peripheral, characteristic: characteristic, error: error))
+        _ = blueticaCentral.peripherals.updateConnected { (peripheral, characteristic) }.device
+        let info = (update: blueticaCentral.peripherals.characteristic, peripheral: peripheral, characteristic: characteristic, error: error)
+        blueticaCentral.peripheralHandler.discoverDescriptors?(self, info)
     }
 
     /// 描述符值更新时回调
     public func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor descriptor: CBDescriptor, error: Error?) {
-        blueticaCentral.peripheralHandler.updateValueDescriptor?(self, (peripheral: peripheral, descriptor: descriptor, error: error))
+        let device = blueticaCentral.peripherals.updateConnected { (peripheral, descriptor) }.device
+        let info = (device: device, peripheral: peripheral, descriptor: descriptor, error: error)
+        blueticaCentral.peripheralHandler.updateValueDescriptor?(self, info)
     }
 
     /// 写入描述符值后回调
     public func peripheral(_ peripheral: CBPeripheral, didWriteValueFor descriptor: CBDescriptor, error: Error?) {
-        blueticaCentral.peripheralHandler.writeValueDescriptor?(self, (peripheral: peripheral, descriptor: descriptor, error: error))
+        let device = blueticaCentral.peripherals.updateConnected { (peripheral, descriptor) }.device
+        let info = (device: device, peripheral: peripheral, descriptor: descriptor, error: error)
+        blueticaCentral.peripheralHandler.writeValueDescriptor?(self, info)
     }
 
     /// 外设准备好无响应写入时回调
     public func peripheralIsReady(toSendWriteWithoutResponse peripheral: CBPeripheral) {
-        blueticaCentral.peripheralHandler.sendWriteWithoutResponse?(self, peripheral)
+        let device = blueticaCentral.peripherals.updateConnected { peripheral }.device
+        let info = (device: device, peripheral: peripheral)
+        blueticaCentral.peripheralHandler.sendWriteWithoutResponse?(self, info)
     }
 
     /// 打开 L2CAP 信道时回调
     public func peripheral(_ peripheral: CBPeripheral, didOpen channel: CBL2CAPChannel?, error: Error?) {
-        blueticaCentral.peripheralHandler.openChannel?(self, (peripheral: peripheral, channel: channel, error: error))
+        let device = blueticaCentral.peripherals.updateConnected { peripheral }.device
+        let info = (device:device, peripheral: peripheral, channel: channel, error: error)
+        blueticaCentral.peripheralHandler.openChannel?(self, info)
     }
 
 }

@@ -163,7 +163,7 @@ extension BlueticaCentral.Handler {
     public typealias DiscoverServicesResult = (@escaping DiscoverServices) -> PeripheralResult
 
     /// 服务信息元组
-    public typealias Service = (device: BlueticaCentral.Device?, peripheral: CBPeripheral, service: CBService, error: Error?)
+    public typealias Service = (device: BlueticaCentral.Device?, update : BlueticaCentral.Service?, peripheral: CBPeripheral, service: CBService, error: Error?)
 
     /// 包含服务发现回调
     /// - Parameters:
@@ -182,7 +182,7 @@ extension BlueticaCentral.Handler {
     public typealias DiscoverCharacteristicsResult = (@escaping DiscoverCharacteristics) -> PeripheralResult
 
     /// 特征值信息元组
-    public typealias Characteristic = (peripheral: CBPeripheral, characteristic: CBCharacteristic, error: Error?)
+    public typealias Characteristic = (update: BlueticaCentral.Characteristic?, peripheral: CBPeripheral, characteristic: CBCharacteristic, error: Error?)
 
     /// 特征值更新回调
     /// - Parameters:
@@ -217,7 +217,7 @@ extension BlueticaCentral.Handler {
     public typealias DiscoverDescriptorsResult = (@escaping DiscoverDescriptors) -> PeripheralResult
 
     /// 描述符信息元组
-    public typealias Descriptor = (peripheral: CBPeripheral, descriptor: CBDescriptor, error: Error?)
+    public typealias Descriptor = (device: BlueticaCentral.Device?, peripheral: CBPeripheral, descriptor: CBDescriptor, error: Error?)
 
     /// 描述符值更新回调
     /// - Parameters:
@@ -239,7 +239,7 @@ extension BlueticaCentral.Handler {
     /// - Parameters:
     ///   - manager: 管理器实例
     ///   - peripheral: 外设对象
-    public typealias SendWriteWithoutResponse = (_ manager: PeripheralManager, _ peripheral: CBPeripheral) -> Void
+    public typealias SendWriteWithoutResponse = (_ manager: PeripheralManager, _ info: (device: BlueticaCentral.Device?, peripheral: CBPeripheral)) -> Void
     /// 链式设置无响应写入回调
     public typealias SendWriteWithoutResponseResult = (@escaping SendWriteWithoutResponse) -> PeripheralResult
 
@@ -247,7 +247,7 @@ extension BlueticaCentral.Handler {
     /// - Parameters:
     ///   - manager: 管理器实例
     ///   - info: 包含外设、信道、错误信息
-    public typealias OpenChannel = (_ manager: PeripheralManager, _ info: (peripheral: CBPeripheral, channel: CBL2CAPChannel?, error: Error?)) -> Void
+    public typealias OpenChannel = (_ manager: PeripheralManager, _ info: (device: BlueticaCentral.Device?, peripheral: CBPeripheral, channel: CBL2CAPChannel?, error: Error?)) -> Void
     /// 链式设置打开 L2CAP 信道回调
     public typealias OpenChannelResult = (@escaping OpenChannel) -> PeripheralResult
 

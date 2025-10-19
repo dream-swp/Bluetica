@@ -17,9 +17,11 @@ struct DeviceInfoDataCommunicationView: View {
 
             characteristicsView
 
-            receivedDataListView
+            characteristicsDataListView { ("接收数据:", characteristic?.read) }
 
             operationButtons
+
+            characteristicsDataListView { ("发送数据:", characteristic?.write) }
 
             sendDataView
 
@@ -34,11 +36,11 @@ extension DeviceInfoDataCommunicationView {
         appStore.appState.data.device
     }
 
-    private var characteristics: [Characteristics] {
+    private var characteristics: [Characteristic] {
         device?.characteristics ?? []
     }
 
-    private var characteristic: Characteristics? {
+    private var characteristic: Characteristic? {
         appStore.appState.data.characteristic
     }
 
@@ -76,6 +78,29 @@ extension DeviceInfoDataCommunicationView {
 
     private var writeDataItem: WriteDataItem {
         appStore.appState.appSignal.characteristicSelectedWriteDataItem
+    }
+
+    private var characteristicRradStyle: AppButtonStyleType {
+        guard let characteristic = characteristic, characteristic.isRead else {
+            return appStore.appState.appStyle.button.characteristicReadDisabled
+        }
+        return appStore.appState.appStyle.button.characteristicRrad
+    }
+
+    private var characteristicNotifyStyle: AppButtonStyleType {
+
+        guard let characteristic = characteristic, characteristic.isNotify else {
+            return appStore.appState.appStyle.button.characteristicNotifyDisabled
+        }
+        return characteristic.isNotifying ? appStore.appState.appStyle.button.characteristicNotifyCancel : appStore.appState.appStyle.button.characteristicNotify
+    }
+
+    private var isSendDisabled: Bool {
+        guard let characteristic = characteristic else {
+            return true
+        }
+        
+        return !(characteristic.isWrite && sendText.isEmpty == false)
     }
 
 }
@@ -138,35 +163,35 @@ extension DeviceInfoDataCommunicationView {
         }
     }
 
-    private var receivedDataListView: some View {
+    private func characteristicsDataListView(_ handler: () -> (title: String, data: CharacteristicData?)) -> some View {
 
         Section {
-            EmptyView().toggle((characteristic?.data.count ?? 0) > 0, characteristic) { _, characteristic in
+            EmptyView().toggle((handler().data?.data.count ?? 0) > 0, handler().data) { _, data in
                 ScrollView {
                     VStack(alignment: .leading, spacing: 8) {
-                        ForEach(ReceivedItem.allCases) { DeviceInfoReceivedCell(item: $0, characteristic: characteristic) { print("12321312") } }
+                        ForEach(CharacteristicDataItem.allCases) { DeviceInfoReceivedCell(item: $0, data: data) { print("12321312") } }
                     }
                 }
-
             }
+
         } header: {
-            Text("接收数据:")
+            Text(handler().title)
                 .font(.subheadline)
                 .fontWeight(.medium)
         }
-
     }
 
     public var operationButtons: some View {
         HStack(spacing: 8) {
-            ButtonView(appStore.appState.appStyle.button.characteristicReceiving) {
-                appStore.dispatch(.deviceInfo(.receivingData))
+            Spacer()
+            ButtonView(characteristicRradStyle) {
+                appStore.dispatch(.deviceInfo(.readData))
             }
 
             .frame(width: 100, height: 30)
 
-            ButtonView(appStore.appState.appStyle.button.characteristicNotify) {
-                print("123123")
+            ButtonView(characteristicNotifyStyle) {
+                appStore.dispatch(.deviceInfo(.notify))
             }
             .frame(width: 120, height: 30)
         }
@@ -186,10 +211,10 @@ extension DeviceInfoDataCommunicationView {
                     appStore.dispatch(.deviceInfo(.sendData))
                 } label: {
                     Text("发送")
-                        .foregroundStyle((sendText.isEmpty || characteristic == nil) ? .gray : .green)
+                        .foregroundStyle(isSendDisabled ? .gray : .green)
                 }
                 .frame(height: 10)
-                .disabled(sendText.isEmpty)
+                .disabled(isSendDisabled)
                 .padding(.horizontal, 16)
                 .padding(.vertical, 8)
                 .clipShape(RoundedRectangle(cornerRadius: 8))
@@ -197,41 +222,29 @@ extension DeviceInfoDataCommunicationView {
             }
             .padding(.vertical, 5)
         } header: {
-            VStack {
-                
-                HStack {
-                    Text("发送数据:")
-                        .font(.subheadline)
-                        .fontWeight(.medium)
-                    Spacer()
-                }
-                HStack {
-                    Spacer()
-                    Picker(selection: writeModeItemBinding) {
-                        ForEach(WriteModeItem.allCases) {
-                            Label($0.rawValue, systemImage: $0.icon)
-                        }
-                    } label: {
 
-                        Label(writeModeItem.rawValue, systemImage: writeModeItem.icon)
-                            .labelStyle(.automatic)
-                            .font(.system(.caption2))
+            HStack {
+                Spacer()
+                Picker(selection: writeModeItemBinding) {
+                    ForEach(WriteModeItem.allCases) {
+                        Label($0.rawValue, systemImage: $0.icon)
                     }
-                    .font(.system(.caption2))
-                    .pickerStyle(.automatic)
+                } label: {
 
-                    Picker(selection: writeDataItemBinding) {
-                        ForEach(WriteDataItem.allCases) {
-                            Label($0.rawValue, systemImage: $0.icon)
-                        }
-                    } label: {
-                        Label(writeDataItem.rawValue, systemImage: writeDataItem.icon)
-                            .labelStyle(.automatic)
-                            .font(.system(.caption2))
-                    }
-                    .font(.system(.caption2))
-                    .pickerStyle(.automatic)
+                    Label(writeModeItem.rawValue, systemImage: writeModeItem.icon)
+                        .labelStyle(.automatic)
                 }
+                .pickerStyle(.automatic)
+
+                Picker(selection: writeDataItemBinding) {
+                    ForEach(WriteDataItem.allCases) {
+                        Label($0.rawValue, systemImage: $0.icon)
+                    }
+                } label: {
+                    Label(writeDataItem.rawValue, systemImage: writeDataItem.icon)
+                        .labelStyle(.automatic)
+                }
+                .pickerStyle(.automatic)
             }
 
         }

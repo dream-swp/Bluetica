@@ -5,6 +5,8 @@
 //  Created by Dream on 2025/9/20.
 //
 
+
+
 enum DeviceInfoAction: ActionProtocol {
 
     case buttons(Device?, DeviceInfoButtonsView.ButtonType)
@@ -15,9 +17,17 @@ enum DeviceInfoAction: ActionProtocol {
 
     case updateCharacteristics
     
-    case receivingData
+    case readData
+    
+    case updateData
     
     case sendData
+    
+    case notify
+    
+    case subscribeNotify
+    
+    case unsubscribeNotify
 
     var command: AppCommand? {
 
@@ -27,16 +37,23 @@ enum DeviceInfoAction: ActionProtocol {
         case .selectedService(let service):
             DeviceInfoSelectedServiceCommand(service: service)
         case .displayCharacteristicsList(let isDisplayCharacteristicsList):
-            DeviceInfoDisplayCharacteristicsCommand(isDisplayCharacteristicsList)
+            DeviceInfoDisplayCharacteristicCommand(isDisplayCharacteristicsList)
         case .updateCharacteristics:
-            DeviceInfoUpdateCharacteristicsCommand()
-        case .receivingData:
-            DeviceInfoCharacteristicsReceivingData()
+            DeviceInfoUpdateCharacteristicCommand()
+        case .readData:
+            DeviceInfoCharacteristicReadData()
+        case .updateData:
+            DeviceInfoCharacteristicUpdateData()
         case .sendData:
-            DeviceInfoCharacteristicsSendData()
+            DeviceInfoCharacteristicSendData()
+        case .notify:
+            DeviceInfoCharacteristicNotify()
+        case .subscribeNotify:
+            DeviceInfoCharacteristicSubscribeNotify()
+        case .unsubscribeNotify:
+            DeviceInfoCharacteristicUnsubscribeNotify()
         }
 
     }
 
 }
-

@@ -14,7 +14,7 @@ extension Data: Convert {}
 extension BlueticaConvert where Convert == Data {
 
     public var decimals: [UInt8] {
-        Array(self.convert)
+        BlueticaConvertValue.decimal(self.convert, ", ").bytes
     }
 
     public var decimal: String {
@@ -22,15 +22,15 @@ extension BlueticaConvert where Convert == Data {
     }
 
     public func decimal(_ handler: () -> String = { ", " }) -> String {
-        self.convert.map { String($0) }.joined(separator: handler())
+        BlueticaConvertValue.decimal(self.convert, handler()).value
     }
 
-    public var string: String {
-        self.string { .utf8 }
+    public var value: String {
+        self.value { .utf8 }
     }
 
-    public func string(_ handler: () -> String.Encoding = { .utf8 }) -> String {
-        String(data: self.convert, encoding: handler()) ?? ""
+    public func value(_ handler: () -> String.Encoding = { .utf8 }) -> String {
+        BlueticaConvertValue.data(self.convert, handler()).value
     }
 
     public var hex: String {
@@ -38,9 +38,7 @@ extension BlueticaConvert where Convert == Data {
     }
 
     public func hex(_ handler: () -> (isUppercased: Bool, separator: String) = { (true, " ") }) -> String {
-        let result = handler()
-        let format = result.isUppercased ? "%02X" : "%02x"
-        return self.convert.map { String(format: format, $0) }.joined(separator: result.separator)
+        BlueticaConvertValue.hex(self.convert, handler().isUppercased, handler().separator).value
     }
 
     public var binary: String {
@@ -48,7 +46,7 @@ extension BlueticaConvert where Convert == Data {
     }
 
     public func binary(_ handler: () -> (pad: Int, separator: String) = { (8, " ") }) -> String {
-        self.convert.map { String($0, radix: 2).pad(handler().pad) }.joined(separator: handler().separator)
+        BlueticaConvertValue.binary(self.convert, handler().pad, handler().separator).value
     }
 
     public var ascii: String {
@@ -56,68 +54,15 @@ extension BlueticaConvert where Convert == Data {
     }
 
     public func ascii(_ handler: () -> String = { "*" }) -> String {
-        self.convert.map { (32...126).contains($0) ? String(Character(UnicodeScalar($0))) : handler() }.joined()
+        BlueticaConvertValue.ascii(self.convert, handler()).value
     }
 
     public var base64: String {
-        self.convert.base64EncodedString()
-    }
-}
- 
-extension BlueticaConvert where Convert == Data? {
-
-    public var decimals: [UInt8] {
-        guard let data = self.convert else { return [] }
-        return Array(data)
+        self.base64()
     }
 
-    public var decimal: String {
-        self.convert?.map { String($0) }.joined(separator: ",") ?? ""
-    }
-
-    public var string: String { self.string { .utf8 } ?? "" }
-
-    public func string(_ handler: () -> String.Encoding = { .utf8 }) -> String {
-        guard let data = self.convert, let string = String(data: data, encoding: handler()) else { return "" }
-        return string
-    }
-
-    public var hex: String {
-        self.hex()
-    }
-
-    public func hex(_ handler: () -> (isUppercased: Bool, separator: String) = { (true, " ") }) -> String {
-        guard let data = self.convert else { return "" }
-        let result = handler()
-        let format = result.isUppercased ? "%02X" : "%02x"
-        return data.map { String(format: format, $0) }.joined(separator: result.separator)
-    }
-
-    public var binary: String {
-        self.binary()
-    }
-
-    public func binary(_ handler: () -> (pad: Int, separator: String) = { (8, " ") }) -> String {
-        self.convert?.map { String($0, radix: 2).pad(handler().pad) }.joined(separator: handler().separator) ?? ""
-    }
-
-    public var ascii: String {
-        self.ascii()
-    }
-
-    public func ascii(_ handler: () -> String = { "*" }) -> String {
-        self.convert?.map { (32...126).contains($0) ? String(Character(UnicodeScalar($0))) : handler() }.joined() ?? ""
-    }
-
-    public var base64: String {
-        self.convert?.base64EncodedString() ?? ""
-    }
-}
-
-extension String {
-
-    fileprivate func pad(_ length: Int, character: Character = "0") -> String {
-        count < length ? String(repeatElement(character, count: length - count)) + self : self
+    public func base64(_ handler: () -> Data.Base64EncodingOptions = { [] }) -> String {
+        BlueticaConvertValue.base64(self.convert, handler()).value
     }
 }
 
@@ -126,12 +71,12 @@ extension String: Convert {}
 
 extension BlueticaConvert where Convert == String {
 
-    public func data(_ handler: () -> String.Encoding) -> Data {
-        return BlueticaConvertData.data(self.convert, handler()).data
-    }
-
     public var data: Data {
         data { .utf8 }
+    }
+
+    public func data(_ handler: () -> String.Encoding) -> Data {
+        return BlueticaConvertData.data(self.convert, handler()).data
     }
 
     public var hex: Data {
@@ -157,9 +102,13 @@ extension BlueticaConvert where Convert == String {
     public var binary: Data {
         BlueticaConvertData.binary(self.convert).data
     }
-    
+
     public var base64: Data {
-        BlueticaConvertData.base64(self.convert, []).data
+        base64 { [] }
+    }
+
+    public func base64(_ handler: () -> Data.Base64DecodingOptions) -> Data {
+        BlueticaConvertData.base64(self.convert, handler()).data
     }
 }
 

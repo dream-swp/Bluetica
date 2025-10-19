@@ -17,9 +17,9 @@ struct Device: Identifiable {
     
     var services: [Service] = []
     
-    var characteristics: [Characteristics] = []
+    var characteristics: [Characteristic] = []
     
-    init(_ device: BlueticaCentral.Device, services: [Service] = [], characteristics: [Characteristics] = []) {
+    init(_ device: BlueticaCentral.Device, services: [Service] = [], characteristics: [Characteristic] = []) {
         self.device = device
         self.services = services
         self.characteristics = characteristics

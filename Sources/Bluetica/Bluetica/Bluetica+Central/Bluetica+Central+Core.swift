@@ -206,6 +206,28 @@ extension BlueticaCentral.Central where Central == Bluetica {
     public func notifyData(_ handler: () -> (enabled: Bool, characteristic: BlueticaCentral.Characteristic)) -> Self {
         self.notifyData(handler)
     }
+    
+    @discardableResult
+    public func subscribeNotify(_ handler: () -> BlueticaCentral.Characteristic) -> Self {
+        subscribeNotify(handler)
+    }
+    
+    public var subscribeNotify: (() -> BlueticaCentral.Characteristic) -> Self {
+        return { characteristic in
+            notifyData { (enabled: true, characteristic: characteristic()) }
+        }
+    }
+    
+    public func unSubscribeNotify(_ handler: () -> BlueticaCentral.Characteristic) -> Self {
+        unSubscribeNotify(handler)
+    }
+    
+    public var unSubscribeNotify: (() -> BlueticaCentral.Characteristic) -> Self {
+        return { characteristic in
+            notifyData { (enabled: false, characteristic: characteristic()) }
+        }
+    }
+    
 
     // MARK: - Write Value Data
     public var writeDataResponse: (() -> (data: Data, characteristic: BlueticaCentral.Characteristic)) -> Self {

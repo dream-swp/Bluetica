@@ -1,5 +1,5 @@
 //
-//  WriteDataItem.swift
+//  CharacteristicWriteItem.swift
 //  Example
 //
 //  Created by Dream on 2025/10/12.
@@ -17,10 +17,10 @@ enum WriteDataItem: String, CaseIterable, Identifiable {
     var icon: String {
         switch self {
         case .hex: "number.square"
-        case .decimal: "textformat.123"
+        case .decimal: "numbers.rectangle"
         case .binary: "01.square"
-        case .string: "textformat"
-        case .base64: "textformat"
+        case .string: "a.square"
+        case .base64: "b.square"
         }
     }
 }
@@ -32,8 +32,8 @@ enum WriteModeItem: String, CaseIterable, Identifiable {
     
     var icon: String {
         switch self {
-        case .writeResponse: "square.and.pencil.circle"
-        case .writeWithoutResponse: "square.and.pencil"
+        case .writeResponse: "highlighter.badge.ellipsis"
+        case .writeWithoutResponse: "highlighter"
         }
     }
     

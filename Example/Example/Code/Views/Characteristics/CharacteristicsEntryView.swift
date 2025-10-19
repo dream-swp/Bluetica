@@ -10,7 +10,7 @@ import SwiftUI
 // MARK: - CharacteristicsEntryView
 struct CharacteristicsEntryView: View {
 
-    let characteristics: [Characteristics]
+    let characteristics: [Characteristic]
 
     @EnvironmentObject private var appStore: AppStore
 
@@ -20,8 +20,6 @@ struct CharacteristicsEntryView: View {
         }
         .onAppear {
             appStore.dispatch(.characteristics(.characteristicsDefaultData))
-            
-//            characteristicsDefaultData
         }
     }
 
@@ -64,9 +62,9 @@ extension CharacteristicsEntryView {
 }
 
 extension CharacteristicsEntryView {
-    var datas: [CharacteristicsBarItme] { CharacteristicsBarItme.allCases }
+    var datas: [CharacteristicBarItme] { CharacteristicBarItme.allCases }
 
-    private var selection: CharacteristicsBarItme {
+    private var selection: CharacteristicBarItme {
         appStore.appState.appSignal.characteristicsBarItme
     }
     
@@ -74,8 +72,8 @@ extension CharacteristicsEntryView {
 
 // MARK: - CharacteristicsTagBarView
 private struct CharacteristicsTagBarView: View {
-    let item: CharacteristicsBarItme
-    let characteristics: [Characteristics]
+    let item: CharacteristicBarItme
+    let characteristics: [Characteristic]
     let isSelected: Bool = false
 
     var body: some View {
@@ -104,7 +102,7 @@ private struct CharacteristicsTagBarView: View {
 
 struct CharacteristicsGroupView: View {
 
-    let characteristics: [Characteristics]
+    let characteristics: [Characteristic]
 
     @EnvironmentObject private var appStore: AppStore
 
@@ -127,11 +125,11 @@ struct CharacteristicsGroupView: View {
 }
 
 extension CharacteristicsGroupView {
-    private var datas: [CharacteristicsBarItme] {
-        CharacteristicsBarItme.allCases
+    private var datas: [CharacteristicBarItme] {
+        CharacteristicBarItme.allCases
     }
 
-    private var selection: CharacteristicsBarItme {
+    private var selection: CharacteristicBarItme {
         appStore.appState.appSignal.characteristicsBarItme
     }
 }
@@ -139,8 +137,8 @@ extension CharacteristicsGroupView {
 // MARK: - CharacteristicsBarView
 private struct CharacteristicsBarView: View {
 
-    let item: CharacteristicsBarItme
-    let characteristics: [Characteristics]
+    let item: CharacteristicBarItme
+    let characteristics: [Characteristic]
     var isSelected: Bool = false
 
     let action: () -> Void
@@ -174,7 +172,7 @@ private struct CharacteristicsBarView: View {
 
     }
 
-    init(item: CharacteristicsBarItme, characteristics: [Characteristics], isSelected: Bool, action: @escaping () -> Void) {
+    init(item: CharacteristicBarItme, characteristics: [Characteristic], isSelected: Bool, action: @escaping () -> Void) {
         self.item = item
         self.characteristics = characteristics
         self.isSelected = isSelected

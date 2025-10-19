@@ -96,6 +96,7 @@ struct ScanConnectDeviceCommand: AppCommand {
                 }
 
                 store.appState.appSignal.isDisplayCharacteristicsList = false
+                store.dispatch(.characteristics(.characteristicsDefaultData))
             }
             .discoverServices { manager, info in
                 store.appState.data.servicesMessage = "自动检索服务成功"
@@ -104,7 +105,7 @@ struct ScanConnectDeviceCommand: AppCommand {
                 if let device = info.device {
                     store.appState.data.device?.services = device.services.compactMap { Service($0) }
                     store.appState.data.device?.characteristics = device.serviceCharacteristics.compactMap {
-                        Characteristics(service: Service($0.service), characteristic: $0.characteristic)
+                        Characteristic(service: Service($0.service), characteristic: $0.characteristic)
                     }
                 }
             }

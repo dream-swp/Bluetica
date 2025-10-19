@@ -5,7 +5,7 @@
 //  Created by Dream on 2025/10/2.
 //
 
-enum CharacteristicsBarItme: String, CaseIterable, Identifiable {
+enum CharacteristicBarItme: String, CaseIterable, Identifiable {
 
     var id: Self { self }
 
@@ -18,28 +18,28 @@ enum CharacteristicsBarItme: String, CaseIterable, Identifiable {
         true
     }
 
-    func matches(_ characteristic: Characteristics) -> Bool {
+    func matches(_ characteristic: Characteristic) -> Bool {
         switch self {
         case .all: return true
         case .read: return characteristic.isRead
-        case .write: return characteristic.isWrite || characteristic.isWriteWithoutResponse
+        case .write: return characteristic.isWriteResponse || characteristic.isWriteWithoutResponse
         case .notify: return characteristic.isNotify || characteristic.isIndicate
         }
     }
 
-    var count: (() -> ([Characteristics])) -> Int {
+    var count: (() -> ([Characteristic])) -> Int {
         return { result in
             result().filter { self.matches($0) }.count
         }
     }
 
-    func datas(_ handler: () -> [Characteristics]) -> [(service: String, characteristics: [Characteristics])] {
+    func datas(_ handler: () -> [Characteristic]) -> [(service: String, characteristics: [Characteristic])] {
 
         let result = handler()
         let filter = result.filter { self.matches($0) }
         let grouped = Dictionary(grouping: filter) { $0.service.uuid.string }
         
-        let datas = grouped.compactMap { (key: String, value: [Characteristics]) in
+        let datas = grouped.compactMap { (key: String, value: [Characteristic]) in
             (service: key, characteristics: value.sorted { $0.name < $1.name })
         }.sorted { $0.service < $1.service }
         

@@ -18,9 +18,15 @@ struct AppButtonStyle {
     let deviceInfo: AppButtonStyleType = .infoStyle
     let deviceOperation: [AppButtonStyleType] = [.disconnectStyle, .subscribeStyle, .refreshFeatureStyle, .characteristicCountStyle]
     
-    let characteristicReceiving: AppButtonStyleType = .characteristicReceivingStyle
+    let characteristicRrad: AppButtonStyleType = .characteristicReadStyle
+    
+    let characteristicReadDisabled: AppButtonStyleType = .characteristicReadDisabledStyle
     
     let characteristicNotify: AppButtonStyleType = .characteristicNotifyStyle
+    
+    let characteristicNotifyCancel: AppButtonStyleType = .characteristicNotifyCancelStyle
+    
+    let characteristicNotifyDisabled: AppButtonStyleType = .characteristicNotifyDisabledStyle
     
     
 }
@@ -78,13 +84,26 @@ extension AppButtonStyleType {
         .init(imageName: .icon("info.circle"), title: .text("特征统计"), backgroundColor: .color(.purple), fontColor: .color(.white), font: .font(.callout), execute: .command("characteristic"))
     }
     
-    static var characteristicReceivingStyle: Self {
+    static var characteristicReadStyle: Self {
         .init(imageName: .icon("repeat.circle.fill"), title: .text("读取数据"), backgroundColor: .color(.green), fontColor: .color(.white), font: .font(.callout))
+    }
+    
+    static var characteristicReadDisabledStyle: Self {
+        .init(imageName: .icon("repeat.circle.fill"), title: .text("读取数据"), backgroundColor: .color(.green), fontColor: .color(.white), font: .font(.callout), disabled: true)
     }
     
     
     static var characteristicNotifyStyle: Self {
-        .init(imageName: .icon("bell.circle.fill"), title: .text("订阅通知"), backgroundColor: .color(.green), fontColor: .color(.white), font: .font(.callout))
+        .init(imageName: .icon("bell.circle.fill"), title: .text("订阅通知"), backgroundColor: .color(.orange), fontColor: .color(.white), font: .font(.callout))
+    }
+    
+    
+    static var characteristicNotifyCancelStyle: Self {
+        .init(imageName: .icon("bell.circle.fill"), title: .text("取消订阅"), backgroundColor: .color(.orange), fontColor: .color(.white), font: .font(.callout))
+    }
+    
+    static var characteristicNotifyDisabledStyle: Self {
+        .init(imageName: .icon("bell.circle.fill"), title: .text("取消订阅"), backgroundColor: .color(.orange), fontColor: .color(.white), font: .font(.callout), disabled: true)
     }
 
 }

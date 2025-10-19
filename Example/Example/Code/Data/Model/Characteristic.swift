@@ -9,17 +9,18 @@ import Bluetica
 import CoreBluetooth
 import Foundation
 
-struct Characteristics {
+struct Characteristic {
 
     let service: Service
 
     let characteristic: BlueticaCentral.Characteristic
-
-    var data = Data()
-
+    
+    var read = CharacteristicData()
+    
+    var write = CharacteristicData()
 }
 
-extension Characteristics: Identifiable {
+extension Characteristic: Identifiable {
 
     var id: CBUUID { characteristic.uuid }
 
@@ -35,7 +36,7 @@ extension Characteristics: Identifiable {
 
     var isWriteWithoutResponse: Bool { characteristic.isWriteWithoutResponse }
 
-    var isWrite: Bool { characteristic.isWrite }
+    var isWriteResponse: Bool { characteristic.isWrite }
 
     var isNotify: Bool { characteristic.isNotify }
 
@@ -48,23 +49,14 @@ extension Characteristics: Identifiable {
     var isNotifyEncryptionRequired: Bool { characteristic.isNotifyEncryptionRequired }
 
     var isIndicateEncryptionRequired: Bool { characteristic.isIndicateEncryptionRequired }
-
-    var decimal: String { data.convert.decimal }
-
-    var string: String { data.convert.string }
-
-    var hexBig: String { data.convert.hex }
     
-    var hexSmall: String { data.convert.hex { (false, " ")} }
+    var isNotifying: Bool { characteristic.isNotifying }
+    
+    var isWrite: Bool { isWriteResponse || isWriteWithoutResponse }
 
-    var binary: String { data.convert.binary }
-
-    var ascii: String { data.convert.ascii }
-
-    var base64: String { data.convert.base64 }
 }
 
-extension Characteristics {
+extension Characteristic {
 
     var name: String {
         switch uuid.uppercased() {
@@ -82,7 +74,7 @@ extension Characteristics {
     var propertiesString: String {
         var props: [String] = []
         if isRead { props.append("读") }
-        if isWrite { props.append("写") }
+        if isWriteResponse { props.append("写") }
         if isWriteWithoutResponse { props.append("写(无响应)") }
         if isNotify { props.append("通知") }
         if isIndicate { props.append("指示") }
@@ -91,7 +83,7 @@ extension Characteristics {
 
 }
 
-extension Characteristics: Equatable {
+extension Characteristic: Equatable {
 
     public static func == (lhs: Self, rhs: Self) -> Bool {
         lhs.id == rhs.id

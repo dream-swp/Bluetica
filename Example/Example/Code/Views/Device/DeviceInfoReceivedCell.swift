@@ -9,8 +9,8 @@ import SwiftUI
 
 struct DeviceInfoReceivedCell: View {
     
-    let item: ReceivedItem
-    let characteristic: Characteristics?
+    let item: CharacteristicDataItem
+    let data: CharacteristicData?
     
     let action: () -> Void
     
@@ -52,6 +52,6 @@ struct DeviceInfoReceivedCell: View {
 
 extension DeviceInfoReceivedCell {
     private var value: String {
-        item.value { characteristic }
+        item.value { data }
     }
 }

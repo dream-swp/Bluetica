@@ -15,7 +15,7 @@ struct CharacteristicsView: View {
     @Environment(\.dismiss) private var dismiss
 
     @State var searchText = ""
-    var characteristics: [Characteristics]
+    var characteristics: [Characteristic]
 
     var body: some View {
 
@@ -108,11 +108,11 @@ extension CharacteristicsView {
 extension CharacteristicsView {
 
 
-    private var barItme: CharacteristicsBarItme? {
+    private var barItme: CharacteristicBarItme? {
         appStore.appState.appSignal.characteristicsBarItme
     }
     
-    private var datas: [(service: String, characteristics: [Characteristics])] {
+    private var datas: [(service: String, characteristics: [Characteristic])] {
         barItme?.datas { characteristics } ?? []
     }
 

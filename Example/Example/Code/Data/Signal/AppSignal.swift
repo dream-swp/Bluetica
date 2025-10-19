@@ -9,12 +9,12 @@ import Foundation
 import SwiftUI
 
 
-struct AppSignal {
+class AppSignal {
     
     
     var isDisplayCharacteristicsList = false
     
-    var characteristicsBarItme: CharacteristicsBarItme = .all
+    var characteristicsBarItme: CharacteristicBarItme = .all
     
     var characteristicsSearchText: String = ""
     
