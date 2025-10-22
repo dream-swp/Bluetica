@@ -13,7 +13,7 @@ import Bluetica
 
 struct Device: Identifiable {
     
-    private var device: BlueticaCentral.Device
+    var device: BlueticaCentral.Device
     
     var services: [Service] = []
     

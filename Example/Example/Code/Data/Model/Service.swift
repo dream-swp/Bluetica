@@ -26,10 +26,12 @@ extension Service {
 
     var uuid: CBUUID { service.uuid }
 
-    var characteristic: [Characteristic] {
+    var serviceCharacteristic: [Characteristic] {
         service.serviceCharacteristics.compactMap { Characteristic(service: Service($0.service), characteristic: $0.characteristic) }
     }
-
+    
+    var characteristic: [BlueticaCentral.Characteristic] { service.characteristics }
+    
     var isPrimary: Bool { service.isPrimary }
     
 }

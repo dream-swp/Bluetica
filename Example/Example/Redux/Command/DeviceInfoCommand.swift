@@ -20,10 +20,18 @@ struct DeviceInfoButtonsCommand: AppCommand {
         case .none:
             break
         case .disconnect:
-            let _ = store.appState.bluetica.central.cancel { device?.peripheral }
+            _ = store.appState.bluetica.central.cancel { device?.peripheral }
         case .subscribe:
             break
         case .refresh:
+            if let device = device {
+                _ = store.appState.bluetica.central.refreshServices { device.device }
+
+                store.appState.message.services = "手动刷新服务完成"
+                store.appState.message.characteristic = "手动刷新特征完成"
+                guard let characteristic = store.appState.data.characteristic, characteristic.isNotifying else { return }
+                store.dispatch(.deviceInfo(.unsubscribeNotify))
+            }
             break
         case .characteristic:
             break
@@ -62,7 +70,7 @@ struct DeviceInfoUpdateCharacteristicCommand: AppCommand {
     }
 }
 
-struct DeviceInfoCharacteristicReadData: AppCommand {
+struct DeviceInfoCharacteristicReadDataCommand: AppCommand {
 
     func execute(_ store: AppStore, action: AppAction) {
 
@@ -75,7 +83,7 @@ struct DeviceInfoCharacteristicReadData: AppCommand {
 
 }
 
-struct DeviceInfoCharacteristicUpdateData: AppCommand {
+struct DeviceInfoCharacteristicUpdateDataCommand: AppCommand {
     func execute(_ store: AppStore, action: AppAction) {
         let _ = store.appState.bluetica.central
             .updateValue { _, data, _ in
@@ -84,7 +92,7 @@ struct DeviceInfoCharacteristicUpdateData: AppCommand {
     }
 }
 
-struct DeviceInfoCharacteristicSendData: AppCommand {
+struct DeviceInfoCharacteristicSendDataCommand: AppCommand {
 
     func execute(_ store: AppStore, action: AppAction) {
         guard let characteristic = store.appState.data.characteristic?.characteristic else { return }
@@ -116,7 +124,7 @@ struct DeviceInfoCharacteristicSendData: AppCommand {
     }
 }
 
-struct DeviceInfoCharacteristicNotify: AppCommand {
+struct DeviceInfoCharacteristicNotifyCommand: AppCommand {
 
     func execute(_ store: AppStore, action: AppAction) {
         guard let characteristic = store.appState.data.characteristic else { return }
@@ -125,7 +133,7 @@ struct DeviceInfoCharacteristicNotify: AppCommand {
 
 }
 
-struct DeviceInfoCharacteristicSubscribeNotify: AppCommand {
+struct DeviceInfoCharacteristicSubscribeNotifyCommand: AppCommand {
 
     func execute(_ store: AppStore, action: AppAction) {
         guard let characteristic = store.appState.data.characteristic else { return }
@@ -137,7 +145,7 @@ struct DeviceInfoCharacteristicSubscribeNotify: AppCommand {
     }
 }
 
-struct DeviceInfoCharacteristicUnsubscribeNotify: AppCommand {
+struct DeviceInfoCharacteristicUnsubscribeNotifyCommand: AppCommand {
     func execute(_ store: AppStore, action: AppAction) {
         guard let characteristic = store.appState.data.characteristic else { return }
         let _ = store.appState.bluetica.central
@@ -149,7 +157,17 @@ struct DeviceInfoCharacteristicUnsubscribeNotify: AppCommand {
                     store.appState.data.characteristic? = Characteristic(service: characteristic.service, characteristic: update)
                 }
             }
-
     }
+}
 
+struct DeviceInfoRefreshCharacteristicCommand: AppCommand {
+    
+    func execute(_ store: AppStore, action: AppAction) {
+        if let device =  store.appState.data.device?.device {
+           _ = store.appState.bluetica.central.refreshCharacteristics { device }
+        }
+        store.appState.message.servicesAndCharacteristic = " ( 已刷新 ) "
+        guard let characteristic = store.appState.data.characteristic, characteristic.isNotifying else { return }
+        store.dispatch(.deviceInfo(.unsubscribeNotify))
+    }
 }

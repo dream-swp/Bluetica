@@ -26,8 +26,7 @@ struct DeviceInfoEntryView: View {
                     DeviceInfoCharacteristicsView()
                     
                     DeviceInfoDataCommunicationView()
-                    
-//                    DeviceInfoCharacteristicsDataView()
+                
                 }
 
         }

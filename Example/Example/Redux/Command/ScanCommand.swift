@@ -15,7 +15,7 @@ struct ScanStateCommand: AppCommand {
         let _ = store.appState.bluetica.central
             .updateState { manager, central in
                 store.appState.data.isEnabled = manager.central.isEnabled
-                store.appState.data.status = manager.central.status.description
+                store.appState.message.status = manager.central.status.description
                 if manager.central.isEnabled {
                     store.dispatch(.status)
                 } else {
@@ -89,6 +89,9 @@ struct ScanConnectDeviceCommand: AppCommand {
                 device.peripheral
             }.connectSuccess { manager, info in
                 info.device.map { store.appState.data.device = Device($0) }
+                store.appState.message.services = "自动刷新服务完成"
+                store.appState.message.characteristic = "自动刷新特征完成"
+                store.appState.message.servicesAndCharacteristic = ""
             }
             .disconnectPeripheral { manager, info in
                 if store.appState.data.devices.count > 0 {
@@ -97,19 +100,23 @@ struct ScanConnectDeviceCommand: AppCommand {
 
                 store.appState.appSignal.isDisplayCharacteristicsList = false
                 store.dispatch(.characteristics(.characteristicsDefaultData))
+
             }
             .discoverServices { manager, info in
-                store.appState.data.servicesMessage = "自动检索服务成功"
+                
             }
             .discoverCharacteristics { manager, info in
                 if let device = info.device {
-                    store.appState.data.device?.services = device.services.compactMap { Service($0) }
-                    store.appState.data.device?.characteristics = device.serviceCharacteristics.compactMap {
+                    let services = device.services.compactMap { Service($0) }
+                    store.appState.data.device?.services = services
+                    let characteristics = device.serviceCharacteristics.compactMap {
                         Characteristic(service: Service($0.service), characteristic: $0.characteristic)
                     }
+                    store.appState.data.device?.characteristics = characteristics
+                    
                 }
+                
             }
-
     }
 }
 

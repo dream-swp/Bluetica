@@ -14,6 +14,8 @@ struct AppState {
     var data = DataSignal()
     
     var appSignal = AppSignal()
+    
+    var message = MessageSignal()
         
     let appStyle = AppStyle()
 }

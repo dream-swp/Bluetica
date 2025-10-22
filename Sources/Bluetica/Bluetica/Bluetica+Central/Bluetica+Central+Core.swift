@@ -161,6 +161,48 @@ extension BlueticaCentral.Central where Central == Bluetica {
             return Bluetica.default.central
         }
     }
+    
+    
+    public func refreshServices(_ device: BlueticaCentral.Device) -> Self {
+        guard let peripheral = central.blueticaCentral.peripherals.peripheral, peripheral.state == .connected else {
+            return Bluetica.default.central
+        }
+        peripheral.discoverServices(self.central.blueticaCentral.peripheralConfig.discoverServices)
+        return Bluetica.default.central
+    }
+    
+    public func refreshServices(_ handler: () -> (BlueticaCentral.Device)) -> Self {
+        refreshServices(handler())
+    }
+    
+    public var refreshServices: (() -> BlueticaCentral.Device) -> Self {
+        return {
+            refreshServices($0())
+        }
+    }
+    
+    
+    public func refreshCharacteristics(_ device: BlueticaCentral.Device) -> Self {
+        guard let peripheral = central.blueticaCentral.peripherals.peripheral, peripheral.state == .connected else {
+            return Bluetica.default.central
+        }
+        
+        peripheral.services?.compactMap {
+            peripheral.discoverCharacteristics(central.blueticaCentral.peripheralConfig.discoverCharacteristics, for: $0)
+        }
+        return Bluetica.default.central
+    }
+    
+    public func refreshCharacteristics(_ handler: () -> (BlueticaCentral.Device)) -> Self {
+        refreshCharacteristics(handler())
+    }
+    
+    public var refreshCharacteristics: (() -> BlueticaCentral.Device) -> Self {
+        return {
+            refreshCharacteristics($0())
+        }
+    }
+    
 }
 
 extension BlueticaCentral.Central where Central == Bluetica {
@@ -255,19 +297,19 @@ extension BlueticaCentral.Central where Central == Bluetica {
     @discardableResult
     public func writeValue(_ data: Data, for characteristic: CBCharacteristic, type: CBCharacteristicWriteType = .withResponse) -> Self {
         guard let peripheral = central.blueticaCentral.peripherals.peripheral, peripheral.state == .connected else {
-            return self
+            return Bluetica.default.central
         }
         peripheral.writeValue(data, for: characteristic, type: type)
-        return self
+        return Bluetica.default.central
     }
     
     @discardableResult
     public func writeValue(_ data: Data, for descriptor: CBDescriptor) -> Self {
         guard let peripheral = central.blueticaCentral.peripherals.peripheral, peripheral.state == .connected else {
-            return self
+            return Bluetica.default.central
         }
         peripheral.writeValue(data, for: descriptor)
-        return self
+        return Bluetica.default.central
     }
     
     // TODO: - 

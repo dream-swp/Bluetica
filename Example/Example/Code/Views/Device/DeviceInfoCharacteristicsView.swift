@@ -14,7 +14,7 @@ struct DeviceInfoCharacteristicsView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
-                Text("服务和特征")
+                Text(message)
                     .font(.headline)
                     .foregroundStyle(.primary)
 
@@ -29,7 +29,7 @@ struct DeviceInfoCharacteristicsView: View {
                     .clipShape(RoundedRectangle(cornerRadius: 4))
 
                 Button {
-
+                    appStore.dispatch(.deviceInfo(.refreshCharacteristic))
                 } label: {
                     Image(systemName: "arrow.clockwise")
                         .font(.caption)
@@ -41,7 +41,7 @@ struct DeviceInfoCharacteristicsView: View {
             .padding(.top, 10)
             .padding(.horizontal, 20)
 
-            EmptyView().toggle(description) { _ , value in
+            EmptyView().toggle(description) { _, value in
                 Text(value)
                     .font(.system(.caption, design: .monospaced))
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -50,7 +50,6 @@ struct DeviceInfoCharacteristicsView: View {
                     .clipShape(RoundedRectangle(cornerRadius: 8))
                     .textSelection(.enabled)
             }
-            
 
         }
         .background(
@@ -69,13 +68,17 @@ extension DeviceInfoCharacteristicsView {
     private var device: Device? {
         appStore.appState.data.device
     }
-    
+
     private var description: String? {
         device?.description
     }
-    
-    private var characteristics: [Characteristic]  {
+
+    private var characteristics: [Characteristic] {
         device?.characteristics ?? []
+    }
+
+    private var message: String {
+        "服务和特征" + appStore.appState.message.servicesAndCharacteristic
     }
 }
 

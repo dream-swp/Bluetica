@@ -51,18 +51,37 @@ extension DeviceInfoButtonsView {
     }
 
     private var infoView: some View {
+
         HStack {
-            Image(systemName: "info.circle")
-                .foregroundStyle(.blue)
-                .font(.caption)
-            
-            Text(servicesMessage)
-                .font(.caption)
-                .foregroundStyle(.secondary)
+            HStack {
+                Image(systemName: "info.circle")
+                    .foregroundStyle(.blue)
+                    .font(.caption)
+                
+                Text(servicesMessage)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                
+                Spacer()
+            }
+            .padding(.horizontal)
             
             Spacer()
+            
+            HStack {
+                Spacer()
+                Text(characteristicMessage)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                Image(systemName: "info.circle")
+                    .foregroundStyle(.blue)
+                    .font(.caption)
+                
+                
+            }
+            .padding(.horizontal)
         }
-        .padding(.horizontal)
+        
     }
 }
 
@@ -76,7 +95,11 @@ extension DeviceInfoButtonsView {
     }
     
     private var servicesMessage: String {
-        appStore.appState.data.servicesMessage
+        appStore.appState.message.services + " ( 发现 \(device?.services.count ?? 0) 服务 ) "
+    }
+    
+    private var characteristicMessage: String {
+        appStore.appState.message.characteristic + " ( 发现 \(device?.characteristics.count ?? 0) 特征 ) "
     }
 }
 

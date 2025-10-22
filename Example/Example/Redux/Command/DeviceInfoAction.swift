@@ -28,6 +28,8 @@ enum DeviceInfoAction: ActionProtocol {
     case subscribeNotify
     
     case unsubscribeNotify
+    
+    case refreshCharacteristic
 
     var command: AppCommand? {
 
@@ -41,17 +43,19 @@ enum DeviceInfoAction: ActionProtocol {
         case .updateCharacteristics:
             DeviceInfoUpdateCharacteristicCommand()
         case .readData:
-            DeviceInfoCharacteristicReadData()
+            DeviceInfoCharacteristicReadDataCommand()
         case .updateData:
-            DeviceInfoCharacteristicUpdateData()
+            DeviceInfoCharacteristicUpdateDataCommand()
         case .sendData:
-            DeviceInfoCharacteristicSendData()
+            DeviceInfoCharacteristicSendDataCommand()
         case .notify:
-            DeviceInfoCharacteristicNotify()
+            DeviceInfoCharacteristicNotifyCommand()
         case .subscribeNotify:
-            DeviceInfoCharacteristicSubscribeNotify()
+            DeviceInfoCharacteristicSubscribeNotifyCommand()
         case .unsubscribeNotify:
-            DeviceInfoCharacteristicUnsubscribeNotify()
+            DeviceInfoCharacteristicUnsubscribeNotifyCommand()
+        case .refreshCharacteristic:
+            DeviceInfoRefreshCharacteristicCommand() 
         }
 
     }

@@ -8,7 +8,11 @@
 
 import Bluetica
 
+
+
 struct DataSignal {
+    
+    
 
 //    let bluetica = Bluetica.default
     
@@ -16,13 +20,15 @@ struct DataSignal {
 
     var isEnabled = false
 
-    var status = "等待蓝牙初始化..."
+//    var status = "等待蓝牙初始化..."
 
     var devices: [Device] = []
 
     var device: Device?
     
-    var servicesMessage = ""
+//    var servicesMessage = ""
+//    
+//    var characteristicMessage = ""
     
     var service: Service?
     

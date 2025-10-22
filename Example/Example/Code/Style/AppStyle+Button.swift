@@ -16,7 +16,8 @@ struct AppButtonStyle {
     let clear: AppButtonStyleType = .clearStyle
     let connect: AppButtonStyleType = .connectStyle
     let deviceInfo: AppButtonStyleType = .infoStyle
-    let deviceOperation: [AppButtonStyleType] = [.disconnectStyle, .subscribeStyle, .refreshFeatureStyle, .characteristicCountStyle]
+//    let deviceOperation: [AppButtonStyleType] = [.disconnectStyle, .subscribeStyle, .refreshServiceStyle, .characteristicCountStyle]
+    let deviceOperation: [AppButtonStyleType] = [.disconnectStyle, .refreshServiceStyle]
     
     let characteristicRrad: AppButtonStyleType = .characteristicReadStyle
     
@@ -76,8 +77,8 @@ extension AppButtonStyleType {
         .init(imageName: .icon("bell"), title: .text("订阅通知"), backgroundColor: .color(.orange), fontColor: .color(.white), font: .font(.callout), execute: .command("subscribe"))
     }
 
-    static var refreshFeatureStyle: Self {
-        .init(imageName: .icon("arrow.clockwise"), title: .text("刷新特征"), backgroundColor: .color(.green), fontColor: .color(.white), font: .font(.callout), execute: .command("refresh"))
+    static var refreshServiceStyle: Self {
+        .init(imageName: .icon("arrow.clockwise"), title: .text("刷新服务"), backgroundColor: .color(.green), fontColor: .color(.white), font: .font(.callout), execute: .command("refresh"))
     }
 
     static var characteristicCountStyle: Self {

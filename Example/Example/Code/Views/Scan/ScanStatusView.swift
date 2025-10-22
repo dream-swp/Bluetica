@@ -56,7 +56,7 @@ extension ScanStatusView {
                 .font(.headline)
                 .foregroundStyle(style.textColor.color)
 
-            Text(signal.status)
+            Text(appStore.appState.message.status)
                 .font(.subheadline)
                 .foregroundStyle(style.foregroundStyle.color)
                 .fontWeight(.medium)
