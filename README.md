@@ -4,7 +4,7 @@
 [![Platform](https://img.shields.io/badge/platform-iOS%20%7C%20macOS-lightgrey.svg)](https://developer.apple.com)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-一个现代化的 Swift 蓝牙框架，基于 CoreBluetooth 封装，提供简洁优雅的链式 API 和强大的功能扩展。
+一个简单的 Swift 蓝牙框架，基于 CoreBluetooth 封装，提供简洁优雅的链式 API 和常规的功能扩展。
 
 ## ✨ 特性
 
