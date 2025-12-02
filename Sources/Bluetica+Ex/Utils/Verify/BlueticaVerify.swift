@@ -6,16 +6,20 @@
 //
 
 
+/// 验证协议
+/// 用于标记支持 Bluetica 验证功能的类型
 public protocol Verify {}
 
 // MARK: - BlueticaVerify
+/// Bluetica 验证器
+/// 为符合 Verify 协议的类型提供验证功能的访问入口
 public struct BlueticaVerify<Verify> {
 
-    /// Prefix property
+    /// 验证属性
     public let verify: Verify
 
-    /// Initialization method
-    /// - Parameter verify: Verify
+    /// 初始化方法
+    /// - Parameter verify: 要封装的验证对象
     public init(_ verify: Verify) {
         self.verify = verify
     }
@@ -24,13 +28,15 @@ public struct BlueticaVerify<Verify> {
 // MARK: - BlueticaCompatible: BlueticaVerify
 extension Verify {
 
-//    / Instance property
+    /// 实例验证属性
+    /// 为实例提供验证功能的访问入口
     public var verify: BlueticaVerify<Self> {
         set {}
         get { BlueticaVerify(self) }
     }
 
-    /// Static property
+    /// 静态验证属性
+    /// 为类型提供验证功能的访问入口
     public static var verify: BlueticaVerify<Self>.Type {
         set {}
         get { BlueticaVerify<Self>.self }
@@ -38,8 +44,11 @@ extension Verify {
 }
 // MARK: -
 
+/// Bluetica 类型符合 Verify 协议
 extension Bluetica: Verify { }
 
+/// String 类型符合 Verify 协议
 extension String: Verify { }
 
+/// [String] 数组类型符合 Verify 协议
 extension [String]: Verify { }

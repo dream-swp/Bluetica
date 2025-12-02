@@ -21,8 +21,3 @@ extension BlueticaCentral.Central: BlueticaBridge { }
 /// Bluetica 外设桥接
 extension BlueticaPeripheral: BlueticaBridge { }
 
-
-
-
-
-

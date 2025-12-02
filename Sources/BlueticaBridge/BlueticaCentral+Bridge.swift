@@ -6,14 +6,15 @@
 //
 
 
-/// Item
+/// 蓝牙桥接封装结构体
+/// 为符合 BlueticaBridge 协议的类型提供 ba 属性访问
 public struct BA<BA> {
 
-    /// Prefix property
+    /// 桥接属性
     public let ba: BA
 
-    /// Initialization method
-    /// - Parameter ba: Item
+    /// 初始化方法
+    /// - Parameter ba: 要封装的桥接对象
     public init(_ ba: BA) {
         self.ba = ba
     }
@@ -21,13 +22,15 @@ public struct BA<BA> {
 
 extension BlueticaBridge {
 
-    /// Instance property
+    /// 实例 ba 属性
+    /// 为实例提供 BA 桥接的访问入口
     public var ba: BA<Self> {
         set {}
         get { BA(self) }
     }
 
-    /// Static property
+    /// 静态 ba 属性
+    /// 为类型提供 BA 桥接的访问入口
     public static var ba: BA<Self>.Type {
         set {}
         get { BA<Self>.self }
@@ -52,13 +55,15 @@ extension BlueticaCentral {
 
 extension BlueticaBridge {
 
-    /// 实例级 central 桥接属性
+    /// 实例 central 属性
+    /// 为实例提供中心桥接的访问入口
     public var central: BlueticaCentral.Central<Self> {
         set {}
         get { BlueticaCentral.Central(self) }
     }
 
-    /// 类型级 central 桥接属性
+    /// 静态 central 属性
+    /// 为类型提供中心桥接的访问入口
     public static var central: BlueticaCentral.Central<Self>.Type {
         set {}
         get { BlueticaCentral.Central<Self>.self }

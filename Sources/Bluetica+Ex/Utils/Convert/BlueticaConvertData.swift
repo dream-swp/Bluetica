@@ -7,14 +7,22 @@
 
 import Foundation
 
+/// 蓝牙数据转换枚举
+/// 处理各种格式的字符串到 Data 的转换
 enum BlueticaConvertData {
 
+    /// 普通字符串转换
     case data(String, String.Encoding)
+    /// 十六进制字符串转换
     case hex(String)
+    /// 十进制字符串转换
     case decimal(String)
+    /// 二进制字符串转换
     case binary(String)
+    /// Base64 字符串转换
     case base64(String, Data.Base64DecodingOptions = [])
 
+    /// 获取原始字符串值
     var value: String {
         switch self {
         case .data(let value, _),
@@ -26,6 +34,7 @@ enum BlueticaConvertData {
         }
     }
 
+    /// 转换为 Data 对象
     var data: Data {
         switch self {
         case .data(_, let encoding): data(filter.value, encoding: encoding)
@@ -36,6 +45,7 @@ enum BlueticaConvertData {
         }
     }
 
+    /// 获取原始分割后的字符串数组
     var original: [String] {
         switch self {
         case .decimal, .binary:
@@ -47,6 +57,7 @@ enum BlueticaConvertData {
 }
 
 extension BlueticaConvertData {
+    /// 验证字符集
     var verify: CharacterSet {
         switch self {
         case .hex:
@@ -58,6 +69,7 @@ extension BlueticaConvertData {
         }
     }
 
+    /// 分隔符字符集
     var separators: CharacterSet {
 
         switch self {
@@ -67,6 +79,7 @@ extension BlueticaConvertData {
         }
     }
 
+    /// 需要替换移除的字符串数组
     var replacing: [String] {
 
         switch self {
@@ -78,6 +91,7 @@ extension BlueticaConvertData {
 
     }
 
+    /// 过滤并清理字符串
     var filter: Self {
         switch self {
         case .hex(var value):
@@ -102,10 +116,18 @@ extension BlueticaConvertData {
 
 extension BlueticaConvertData {
 
+    /// 将字符串转换为 Data
+    /// - Parameters:
+    ///   - value: 要转换的字符串
+    ///   - encoding: 字符串编码
+    /// - Returns: Data 对象
     func data(_ value: String, encoding: String.Encoding) -> Data {
         value.data(using: encoding) ?? Data()
     }
 
+    /// 将十六进制字符串转换为 Data
+    /// - Parameter value: 十六进制字符串
+    /// - Returns: Data 对象
     func hex(_ value: String) -> Data {
         var data = Data()
         guard value.uppercased().rangeOfCharacter(from: self.verify.inverted) == nil else {
@@ -122,6 +144,7 @@ extension BlueticaConvertData {
         return data
     }
 
+    /// 将十进制字符串转换为字节数组
     var decimals: [UInt8] {
 
         switch self {
@@ -138,6 +161,7 @@ extension BlueticaConvertData {
         }
     }
 
+    /// 将二进制字符串转换为字节数组
     var binarys: [UInt8] {
         switch self {
         case .binary:
@@ -153,6 +177,11 @@ extension BlueticaConvertData {
         }
     }
 
+    /// 将 Base64 字符串转换为 Data
+    /// - Parameters:
+    ///   - value: Base64 字符串
+    ///   - options: 解码选项
+    /// - Returns: Data 对象
     func base64(_ value: String, options: Data.Base64DecodingOptions = []) -> Data {
         Data(base64Encoded: value.trimmingCharacters(in: self.verify), options: options) ?? Data()
     }

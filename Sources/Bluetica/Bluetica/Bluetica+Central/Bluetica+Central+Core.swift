@@ -141,6 +141,7 @@ extension BlueticaCentral.Central where Central == Bluetica {
         central.blueticaCentral.peripherals.discover.count <= 0
     }
 
+    /// 清空所有已发现的设备并断开连接
     public var clearDevice: Self {
         let _ = cancels
         let _ = central.blueticaCentral.peripherals.discover.removeAll()
@@ -162,7 +163,9 @@ extension BlueticaCentral.Central where Central == Bluetica {
         }
     }
     
-    
+    /// 刷新指定设备的服务列表
+    /// - Parameter device: 目标设备
+    /// - Returns: 返回自身以便链式调用
     public func refreshServices(_ device: BlueticaCentral.Device) -> Self {
         guard let peripheral = central.blueticaCentral.peripherals.peripheral, peripheral.state == .connected else {
             return Bluetica.default.central
@@ -171,17 +174,23 @@ extension BlueticaCentral.Central where Central == Bluetica {
         return Bluetica.default.central
     }
     
+    /// 刷新指定设备的服务列表（闭包方式）
+    /// - Parameter handler: 返回目标设备的闭包
+    /// - Returns: 返回自身以便链式调用
     public func refreshServices(_ handler: () -> (BlueticaCentral.Device)) -> Self {
         refreshServices(handler())
     }
     
+    /// 链式刷新服务列表
     public var refreshServices: (() -> BlueticaCentral.Device) -> Self {
         return {
             refreshServices($0())
         }
     }
     
-    
+    /// 刷新指定设备的特征值列表
+    /// - Parameter device: 目标设备
+    /// - Returns: 返回自身以便链式调用
     public func refreshCharacteristics(_ device: BlueticaCentral.Device) -> Self {
         guard let peripheral = central.blueticaCentral.peripherals.peripheral, peripheral.state == .connected else {
             return Bluetica.default.central
@@ -193,10 +202,14 @@ extension BlueticaCentral.Central where Central == Bluetica {
         return Bluetica.default.central
     }
     
+    /// 刷新指定设备的特征值列表（闭包方式）
+    /// - Parameter handler: 返回目标设备的闭包
+    /// - Returns: 返回自身以便链式调用
     public func refreshCharacteristics(_ handler: () -> (BlueticaCentral.Device)) -> Self {
         refreshCharacteristics(handler())
     }
     
+    /// 链式刷新特征值列表
     public var refreshCharacteristics: (() -> BlueticaCentral.Device) -> Self {
         return {
             refreshCharacteristics($0())
@@ -208,6 +221,9 @@ extension BlueticaCentral.Central where Central == Bluetica {
 extension BlueticaCentral.Central where Central == Bluetica {
     
     // MARK: - Read Value Data
+    /// 读取特征值数据
+    /// - Parameter characteristic: 目标特征值
+    /// - Returns: 返回自身以便链式调用
     @discardableResult
     public func readData(_ characteristic: CBCharacteristic) -> Self {
         guard let peripheral = central.blueticaCentral.peripherals.peripheral, peripheral.state == .connected else {
@@ -217,18 +233,27 @@ extension BlueticaCentral.Central where Central == Bluetica {
         return Bluetica.default.central
     }
 
+    /// 链式读取特征值数据
     public var readData: (() -> BlueticaCentral.Characteristic) -> Self {
         return {
             self.readData($0().characteristic)
         }
     }
 
+    /// 读取特征值数据（闭包方式）
+    /// - Parameter handler: 返回目标特征值的闭包
+    /// - Returns: 返回自身以便链式调用
     @discardableResult
     public func readData(_ handler: () -> BlueticaCentral.Characteristic) -> Self {
         self.readData(handler)
     }
 
     // MARK: - Notify Value Data
+    /// 设置特征值的通知状态
+    /// - Parameters:
+    ///   - enabled: 是否启用通知
+    ///   - characteristic: 目标特征值
+    /// - Returns: 返回自身以便链式调用
     @discardableResult
     public func notifyData(_ enabled: Bool, for characteristic: CBCharacteristic) -> Self {
         guard let peripheral = central.blueticaCentral.peripherals.peripheral, peripheral.state == .connected else {
@@ -249,21 +274,29 @@ extension BlueticaCentral.Central where Central == Bluetica {
         self.notifyData(handler)
     }
     
+    /// 订阅特征值通知（闭包方式）
+    /// - Parameter handler: 返回目标特征值的闭包
+    /// - Returns: 返回自身以便链式调用
     @discardableResult
     public func subscribeNotify(_ handler: () -> BlueticaCentral.Characteristic) -> Self {
         subscribeNotify(handler)
     }
     
+    /// 链式订阅特征值通知
     public var subscribeNotify: (() -> BlueticaCentral.Characteristic) -> Self {
         return { characteristic in
             notifyData { (enabled: true, characteristic: characteristic()) }
         }
     }
     
+    /// 取消订阅特征值通知（闭包方式）
+    /// - Parameter handler: 返回目标特征值的闭包
+    /// - Returns: 返回自身以便链式调用
     public func unSubscribeNotify(_ handler: () -> BlueticaCentral.Characteristic) -> Self {
         unSubscribeNotify(handler)
     }
     
+    /// 链式取消订阅特征值通知
     public var unSubscribeNotify: (() -> BlueticaCentral.Characteristic) -> Self {
         return { characteristic in
             notifyData { (enabled: false, characteristic: characteristic()) }
@@ -272,28 +305,42 @@ extension BlueticaCentral.Central where Central == Bluetica {
     
 
     // MARK: - Write Value Data
+    /// 链式写入数据到特征值（需要响应）
     public var writeDataResponse: (() -> (data: Data, characteristic: BlueticaCentral.Characteristic)) -> Self {
         return {
             self.writeValue($0().data, for: $0().characteristic.characteristic)
         }
     }
 
+    /// 写入数据到特征值（需要响应，闭包方式）
+    /// - Parameter handler: 返回数据和目标特征值的闭包
+    /// - Returns: 返回自身以便链式调用
     @discardableResult
     public func writeDataResponse(_ handler: () -> (data: Data, characteristic: BlueticaCentral.Characteristic)) -> Self {
         self.writeDataResponse(handler)
     }
 
+    /// 链式写入数据到特征值（无需响应）
     public var writeDataWithoutResponse: (() -> (data: Data, characteristic: BlueticaCentral.Characteristic)) -> Self {
         return {
             self.writeValue($0().data, for: $0().characteristic.characteristic, type: .withoutResponse)
         }
     }
 
+    /// 写入数据到特征值（无需响应，闭包方式）
+    /// - Parameter handler: 返回数据和目标特征值的闭包
+    /// - Returns: 返回自身以便链式调用
     @discardableResult
     public func writeDataWithoutResponse(_ handler: () -> (data: Data, characteristic: BlueticaCentral.Characteristic)) -> Self {
         self.writeDataWithoutResponse(handler)
     }
     
+    /// 写入数据到特征值
+    /// - Parameters:
+    ///   - data: 要写入的数据
+    ///   - characteristic: 目标特征值
+    ///   - type: 写入类型，默认需要响应
+    /// - Returns: 返回自身以便链式调用
     @discardableResult
     public func writeValue(_ data: Data, for characteristic: CBCharacteristic, type: CBCharacteristicWriteType = .withResponse) -> Self {
         guard let peripheral = central.blueticaCentral.peripherals.peripheral, peripheral.state == .connected else {
@@ -303,6 +350,11 @@ extension BlueticaCentral.Central where Central == Bluetica {
         return Bluetica.default.central
     }
     
+    /// 写入数据到描述符
+    /// - Parameters:
+    ///   - data: 要写入的数据
+    ///   - descriptor: 目标描述符
+    /// - Returns: 返回自身以便链式调用
     @discardableResult
     public func writeValue(_ data: Data, for descriptor: CBDescriptor) -> Self {
         guard let peripheral = central.blueticaCentral.peripherals.peripheral, peripheral.state == .connected else {

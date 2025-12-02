@@ -6,17 +6,20 @@
 //
 
 
+/// 工具协议
+/// 用于标记支持 Bluetica 工具功能的类型
 protocol Utils { }
 
 // MARK: - BlueticaUtils
-/// Isolation
+/// Bluetica 工具封装器
+/// 为符合 Utils 协议的类型提供工具方法的访问入口
 public struct BlueticaUtils<Utils> {
 
-    /// Prefix property
+    /// 工具属性
     public var utils: Utils
 
-    /// Initialization method
-    /// - Parameter utils: Utils
+    /// 初始化方法
+    /// - Parameter utils: 要封装的工具对象
     public init(_ utils: Utils) {
         self.utils = utils
     }
@@ -25,13 +28,15 @@ public struct BlueticaUtils<Utils> {
 // MARK: - BlueticaCompatible: BlueticaUtils
 extension Utils {
 
-    /// Instance property
+    /// 实例工具属性
+    /// 为实例提供工具方法的访问入口
     public var utils: BlueticaUtils<Self> {
         set {}
         get { BlueticaUtils(self) }
     }
 
-    /// Static property
+    /// 静态工具属性
+    /// 为类型提供工具方法的访问入口
     public static var utils: BlueticaUtils<Self>.Type {
         set {}
         get { BlueticaUtils<Self>.self }
